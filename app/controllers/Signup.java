@@ -17,7 +17,6 @@ public class Signup extends Controller {
         String  originalPassword = users.get("password");
         String hashpass = BCrypt.hashpw(originalPassword, BCrypt.gensalt(12));
         boolean matched = BCrypt.checkpw(originalPassword, hashpass);
-
         return ok(signup.render("Success"));
     }
 }
