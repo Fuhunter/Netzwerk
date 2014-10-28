@@ -1,6 +1,5 @@
 package controllers;
 
-import models.Users;
 import play.*;
 import play.data.DynamicForm;
 import play.data.Form;
