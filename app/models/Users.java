@@ -11,6 +11,10 @@ public class Users extends Model {
     @Id
     public Long id;
 
+    public String vorname;
+
+    public String nachname;
+
     public String email;
 
     public String wohnort;

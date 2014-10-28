@@ -1,6 +1,7 @@
 package controllers;
 
 import assets.BCrypt;
+import models.Users;
 import play.*;
 import play.data.DynamicForm;
 import play.mvc.*;
@@ -9,7 +10,7 @@ import views.html.*;
 public class Signup extends Controller {
 
     public static Result index() {
-        return ok(signup.render(null));
+        return ok(signup.render(null, null));
     }
 
     public static Result register() {
@@ -22,11 +23,28 @@ public class Signup extends Controller {
         String password2 = newUser.get("rpassword");
         String hashpass = BCrypt.hashpw(password, BCrypt.gensalt(12));
         boolean matched = BCrypt.checkpw(password2, hashpass);
+        String day = newUser.get("tt");
+        String month = newUser.get("mm");
+        String year = newUser.get("yyyy");
 
         if (matched != true) {
-            return badRequest(signup.render("Passwort nicht identisch!"));
+            return badRequest(signup.render(true ,"Passwort nicht identisch!"));
         }
 
-        return ok(signup.render("Success"));
+        Users nUser = new Users();
+        nUser.birth = day + "." + month + "." + year;
+        nUser.email = email;
+        nUser.vorname = vorname;
+        nUser.nachname = nachname;
+        nUser.sex = geschlecht;
+        nUser.pwsafe = hashpass;
+        nUser.active = 0;
+        nUser.blocked = 0;
+        nUser.save();
+        return ok(signup.render(false, "Success"));
+    }
+
+    public static Result login() {
+        return ok();
     }
 }
