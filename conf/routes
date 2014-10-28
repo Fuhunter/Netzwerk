@@ -4,12 +4,20 @@
 
 # Home page
 GET     /                           controllers.Application.index()
+POST    /                           controllers.Signup.login()
+
 GET     /index                      controllers.Application.index()
+POST    /index                      controllers.Signup.login()
+
 GET     /about                      controllers.Application.about()
+POST    /about                      controllers.Signup.login()
+
 GET     /impressum                  controllers.Application.impressum()
+POST    /impressum                  controllers.Signup.login()
+
 GET     /signup                     controllers.Signup.index()
 POST    /signup                     controllers.Signup.register()
-POST    /                           controllers.Signup.login()
+
 POST    /login                      controllers.Signup.login()
 GET     /login                      controllers.Signup.loginPage()
 GET     /network                    controllers.Network.index()

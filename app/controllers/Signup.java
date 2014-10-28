@@ -69,7 +69,7 @@ public class Signup extends Controller {
         else {
             session().clear();
             session("email", email);
-            // session("userid", user.id);
+            session("userid", Long.toString(user.id));
             return redirect(routes.Network.index());
         }
     }
