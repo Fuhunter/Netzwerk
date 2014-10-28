@@ -1,5 +1,6 @@
 package controllers;
 
+import assets.BCrypt;
 import play.*;
 import play.data.DynamicForm;
 import play.mvc.*;
@@ -13,7 +14,10 @@ public class Signup extends Controller {
 
     public static Result register() {
         DynamicForm users = new DynamicForm().bindFromRequest();
-        Logger.info(users.get("vorname"));
+        String  originalPassword = users.get("password");
+        String hashpass = BCrypt.hashpw(originalPassword, BCrypt.gensalt(12));
+        boolean matched = BCrypt.checkpw(originalPassword, hashpass);
+        
         return ok(signup.render("Success"));
     }
 }
