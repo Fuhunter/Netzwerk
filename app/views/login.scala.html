@@ -1,6 +1,6 @@
-@(name: String)
+@(error: Boolean)(message: String)
 
-@main("About") {
+@main("Login") {
 <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -15,9 +15,9 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="index">Home</a></li>
-                <li><a href="login">Login</a></li>
+                <li class="active"><a href="login">Login</a></li>
                 <li><a href="signup">Sign Up</a></li>
-                <li class="active"><a href="about">About</a></li>
+                <li><a href="about">About</a></li>
                 <li><a href="impressum">Impressum</a></li>
                 <li>
                     <form class="form-inline" role="form" action="@routes.Signup.login()">
@@ -38,8 +38,37 @@
 <div class="container">
 
     <div class="starter-template">
-        <h1>About</h1>
-        @name
+        <h1>Login</h1>
+        <form role="form" class="form-horizontal" action="@routes.Signup.login()" method="POST">
+            <div class="form-group">
+                <label for="email" class="col-sm-2 control-label">Email-Adresse</label>
+                <div class="col-sm-10">
+                    <div class="col-xs-4">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Email-Adresse">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-sm-2 control-label">Passwort</label>
+                <div class="col-sm-10">
+                    <div class="col-xs-4">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Passwort">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="col-xs-4">
+                        <button type="submit" class="btn btn-default">Login</button>
+                        @if(error == true) {
+                        <span class="text-warning">@message</span>
+                        } else {
+                        <span class="text-success">@message</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 
 </div>
