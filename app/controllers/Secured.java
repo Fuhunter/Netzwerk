@@ -13,7 +13,11 @@ public class Secured extends Security.Authenticator {
     @Override
     public String getUsername(Context ctx) {
         // check if User is logged in
-        if (ctx.session().get("email") == null) {
+        if (ctx.session().get("email") == null || ctx.session().get("email").equals("")) {
+            return null;
+        }
+
+        if (Users.findByEmail(ctx.session().get("email")).blocked == 1) {
             return null;
         }
 

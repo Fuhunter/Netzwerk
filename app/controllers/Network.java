@@ -8,6 +8,6 @@ public class Network extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Result index() {
-        return ok(network.render());
+        return ok(network.render(session().get("email")));
     }
 }
