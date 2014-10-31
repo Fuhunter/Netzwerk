@@ -1,3 +1,9 @@
+/**
+ * @author Thomas Dennhardt, Christoph Gaudl and Niclas Günther
+ *
+ * Secured check Authorization for each Page
+ */
+
 package controllers;
 
 import play.*;
@@ -10,6 +16,11 @@ import java.util.Date;
 
 public class Secured extends Security.Authenticator {
 
+    /**
+     * Checks User Permissions and for SessionTimeout
+     * @param ctx
+     * @return
+     */
     @Override
     public String getUsername(Context ctx) {
         // check if User is logged in
@@ -40,6 +51,11 @@ public class Secured extends Security.Authenticator {
         return ctx.session().get("email");
     }
 
+    /**
+     * Redirects to LoginPage if User is not authorized
+     * @param ctx
+     * @return
+     */
     @Override
     public Result onUnauthorized(Context ctx) {
         return redirect(routes.Signup.loginPage());

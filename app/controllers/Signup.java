@@ -1,3 +1,9 @@
+/**
+ * @author Thomas Dennhardt, Christoph Gaudl and Niclas Günther
+ *
+ * Signup Controller handels login and registration of Users
+ */
+
 package controllers;
 
 import assets.BCrypt;
@@ -13,12 +19,22 @@ import views.html.*;
 
 public class Signup extends Controller {
 
+    /**
+     * Show index Page of App
+     * @return Result
+     */
     public static Result index() {
         return ok(signup.render(null, null));
     }
 
+    /**
+     * Registers new User and insert into Database. Is transactional Action
+     * @return
+     */
     @Transactional
     public static Result register() {
+
+        // Bind DynamicForm from Request
         DynamicForm newUserForm = new DynamicForm().bindFromRequest();
         String vorname = newUserForm.get("vorname");
         String nachname = newUserForm.get("nachname");
@@ -26,11 +42,30 @@ public class Signup extends Controller {
         String geschlecht = newUserForm.get("geschlecht");
         String password = newUserForm.get("password");
         String password2 = newUserForm.get("rpassword");
-        String hashpass = BCrypt.hashpw(password, BCrypt.gensalt(12));
-        boolean matched = BCrypt.checkpw(password2, hashpass);
         String day = newUserForm.get("tt");
         String month = newUserForm.get("mm");
         String year = newUserForm.get("yyyy");
+
+        // Check for empty field
+        if (vorname.isEmpty() == true || vorname == "") {
+            return  badRequest(signup.render(true, "Vorname darf nicht leer sein"));
+
+        } else if (nachname.isEmpty() == true || nachname == "") {
+            return  badRequest(signup.render(true, "Nachname darf nicht leer sein"));
+
+        } else if (email.isEmpty() == true || email == "") {
+            return  badRequest(signup.render(true, "Email darf nicht leer sein"));
+
+        } else if (password.isEmpty() == true || password == "") {
+            return  badRequest(signup.render(true, "Passwort darf nicht leer sein"));
+
+        } else if (password2.isEmpty() == true || password2 == "") {
+            return  badRequest(signup.render(true, "Passwort darf nicht leer sein"));
+        }
+
+        // Hash Pass with BCrypt and check if user already exists
+        String hashpass = BCrypt.hashpw(password, BCrypt.gensalt(12));
+        boolean matched = BCrypt.checkpw(password2, hashpass);
 
         if (matched != true) {
             return badRequest(signup.render(true, "Passwort nicht identisch!"));
@@ -42,6 +77,7 @@ public class Signup extends Controller {
             return badRequest(signup.render(true, "E-Mail Adresse bereits vorhanden"));
         }
 
+        // Insert into Database
         try {
             Users newUser = new Users();
             newUser.birth = day + "." + month + "." + year;
@@ -92,11 +128,19 @@ public class Signup extends Controller {
         return ok(signup.render(false, "Success"));
     }
 
+    /**
+     * Logins a User by typed Email and Password
+     * @return
+     */
     public static Result login() {
+
+        // Bind DynamicForm from Request
         DynamicForm loginForm = new DynamicForm().bindFromRequest();
         String password = loginForm.get("password");
         String email = loginForm.get("email");
 
+        // Search for User by Email in Database
+        // If Found login, else redirect with error
         Users user = Users.findByEmail(email);
 
         if (user == null) {
@@ -113,6 +157,10 @@ public class Signup extends Controller {
         }
     }
 
+    /**
+     * Shows Loginpage
+     * @return
+     */
     public static Result loginPage() {
         String message = null;
         if (message == null || message.equals("")) {
@@ -122,6 +170,10 @@ public class Signup extends Controller {
         }
     }
 
+    /**
+     * Destroys session -> User is logged out
+     * @return
+     */
     public static Result logout() {
         session().clear();
         return redirect(routes.Application.index());
