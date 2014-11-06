@@ -1,3 +1,9 @@
+/**
+ * @author Thomas Dennhardt, Christoph Gaudl and Niclas Günther
+ *
+ * User Database Model
+ */
+
 package models;
 
 import play.db.ebean.*;
