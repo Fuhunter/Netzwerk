@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class Groupsmodel extends Model {
 
     @Id
-    protected Long id;
+    protected Long group_id;
 
     protected String gruppenname;
 
@@ -24,11 +24,11 @@ public class Groupsmodel extends Model {
     protected String gruppentags;
 
     public Long getId() {
-        return this.id;
+        return this.group_id;
     }
 
     public void setId(Long ID) {
-        this.id = ID;
+        this.group_id = ID;
     }
 
     public String getGruppenname() {
