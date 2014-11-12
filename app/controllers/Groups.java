@@ -26,7 +26,7 @@ public class Groups extends Controller {
      */
     @Security.Authenticated(Secured.class)
     public static Result index() {
-        return ok(groups.render(session().get("email"), "bla"));
+        return ok(groups.render(session().get("email"), false, ""));
     }
 
 
@@ -40,10 +40,9 @@ public class Groups extends Controller {
 
         // Check for empty field
         if (gruppenname.isEmpty() == true || gruppenname == "") {
-            return badRequest(groups.render(session().get("email"), "Gruppenname darf nicht leer sein"));
+            return badRequest(groups.render(session().get("email"), true, "Gruppenname darf nicht leer sein"));
         }
 
-        return ok(groups.render(session().get("email"), "Success"));
         // Insert into Database
         try {
             Groupsmodel newGroup = new Groupsmodel();
@@ -54,9 +53,9 @@ public class Groups extends Controller {
         }
         catch (Exception e) {
             Logger.error("Error", e);
-            return badRequest(groups.render(true, "Datenbank Fehler"));
+            return badRequest(groups.render(session().get("email"), true, "Datenbank Fehler"));
         }
 
-        return ok(groups.render(false, "Success"));
+        return ok(groups.render(session().get("email"), false, "Success"));
     }
 }

@@ -6,7 +6,10 @@
 
 package controllers;
 
+import models.Users;
 import play.*;
+import play.data.DynamicForm;
+import play.db.ebean.Transactional;
 import play.mvc.*;
 import views.html.*;
 
@@ -18,7 +21,15 @@ public class Usersettings extends Controller {
      */
     @Security.Authenticated(Secured.class)
     public static Result index() {
-        return ok(settings.render(session().get("email")));
+        Users user = Users.findByEmail(session().get("email"));
+
+        Boolean sex = false;
+
+        if (user.getSex() == "Männlich") {
+            sex = true;
+        }
+
+        return ok(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), false, ""));
     }
 
     /**
@@ -26,7 +37,14 @@ public class Usersettings extends Controller {
      * @return
      */
     @Security.Authenticated(Secured.class)
+    @Transactional
     public static Result update() {
-        return ok(settings.render(session().get("email")));
+        DynamicForm changes = new DynamicForm().bindFromRequest();
+        Users user = Users.findByEmail(session().get("email"));
+        return redirect(routes.Usersettings.index());
+    }
+
+    public static Result changePassword() {
+        return redirect(routes.Usersettings.index());
     }
 }

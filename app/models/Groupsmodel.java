@@ -23,6 +23,38 @@ public class Groupsmodel extends Model {
 
     protected String gruppentags;
 
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long ID) {
+        this.id = ID;
+    }
+
+    public String getGruppenname() {
+        return this.gruppenname;
+    }
+
+    public void setGruppenname(String Gruppenname) {
+        this.gruppenname = Gruppenname;
+    }
+
+    public String getGruppenbeschreibung() {
+        return this.gruppenbeschreibung;
+    }
+
+    public void setGruppenbeschreibung(String Gruppenbeschreibung) {
+        this.gruppenbeschreibung = Gruppenbeschreibung;
+    }
+
+    public String getGruppentags() {
+        return this.gruppentags;
+    }
+
+    public void setGruppentags(String Gruppentags) {
+        this.gruppentags = Gruppentags;
+    }
+
     public static Finder<Long,Groupsmodel> find = new Finder<Long,Groupsmodel>(
             Long.class, Groupsmodel.class
     );
