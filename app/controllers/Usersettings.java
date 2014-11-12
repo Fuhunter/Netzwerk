@@ -25,7 +25,7 @@ public class Usersettings extends Controller {
 
         Boolean sex = false;
 
-        if (user.getSex() == "Männlich") {
+        if (user.getSex().equals("Männlich")) {
             sex = true;
         }
 
