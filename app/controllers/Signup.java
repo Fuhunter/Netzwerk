@@ -167,7 +167,6 @@ public class Signup extends Controller {
             user.setSessionId(session().get("id"));
             try {
                 user.save();
-                Logger.debug(session().get("id"));
             } catch (Exception e) {
                 Logger.error("error", e);
             }
