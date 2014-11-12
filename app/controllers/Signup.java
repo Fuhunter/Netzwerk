@@ -132,6 +132,7 @@ public class Signup extends Controller {
      * Logins a User by typed Email and Password
      * @return
      */
+    @Transactional
     public static Result login() {
 
         // Bind DynamicForm from Request
@@ -151,8 +152,18 @@ public class Signup extends Controller {
         }
         else {
             session().clear();
+
+            String id = session("id");
+            if(id == null) {
+                id = java.util.UUID.randomUUID().toString();
+                session("id", id);
+            }
+
+            user.sessionid = session().get("id");
+            user.save();
             session("email", email);
             session("userid", Long.toString(user.id));
+
             return redirect(routes.Network.index());
         }
     }
@@ -174,7 +185,11 @@ public class Signup extends Controller {
      * Destroys session -> User is logged out
      * @return
      */
+    @Transactional
     public static Result logout() {
+        Users user = Users.findByEmail(session().get("email"));
+        user.sessionid = null;
+        user.save();
         session().clear();
         return redirect(routes.Application.index());
     }

@@ -24,11 +24,15 @@ public class Secured extends Security.Authenticator {
     @Override
     public String getUsername(Context ctx) {
         // check if User is logged in
-        if (ctx.session().get("email") == null || ctx.session().get("email").equals("")) {
+        if (ctx.session().get("email") == null || ctx.session().get("email").equals("") || ctx.session().get("id") == null || ctx.session().get("id").equals("")) {
             return null;
         }
 
-        if (Users.findByEmail(ctx.session().get("email")).blocked == 1) {
+        Users user = Users.findByEmail(ctx.session().get("email"));
+
+        String sessionid = ctx.session().get("id");
+
+        if (user.blocked == 1 || user.active == 0 || user.sessionid != sessionid) {
             return null;
         }
 
