@@ -6,3 +6,7 @@
 .login-navbar {
     margin-top: 10px;
 }
+
+textarea, input {
+    resize : none;
+}
