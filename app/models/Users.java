@@ -15,43 +15,195 @@ import javax.persistence.*;
 public class Users extends Model {
 
     @Id
-    public Long id;
+    protected Long id;
 
-    public String vorname;
+    protected String vorname;
 
-    public String nachname;
+    protected String nachname;
 
-    public String email;
+    protected String email;
 
-    public String wohnort;
+    protected String wohnort;
 
-    public String birth;
+    protected String birth;
 
-    public String sex;
+    protected String sex;
 
-    public String ip;
+    protected String ip;
 
-    public String registration;
+    protected String registration;
 
-    public String lastlogin;
+    protected String lastlogin;
 
-    public String lastsessionstart;
+    protected String lastsessionstart;
 
-    public Integer active;
+    protected Integer active;
 
-    public Integer blocked;
+    protected Integer blocked;
 
-    public String homepage;
+    protected String homepage;
 
-    public String profilbild;
+    protected String profilbild;
 
-    public String beschreibung;
+    protected String beschreibung;
 
-    public String comment;
+    protected String comment;
 
-    public String pwsafe;
+    protected String pwsafe;
 
-    public String sessionid;
+    protected String sessionid;
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long ID) {
+        this.id = ID;
+    }
+
+    public String getVorname() {
+        return this.vorname;
+    }
+
+    public void setVorname(String Vorname) {
+        this.vorname = Vorname;
+    }
+
+    public String getNachname() {
+        return this.nachname;
+    }
+
+    public void setNachname(String Nachname) {
+        this.nachname = Nachname;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String Email) {
+        this.email = Email;
+    }
+
+    public String getWohnort() {
+        return this.wohnort;
+    }
+
+    public void setWohnort(String Wohnort) {
+        this.wohnort = Wohnort;
+    }
+
+    public String getBirth() {
+        return this.birth;
+    }
+
+    public void setBirth(String Birth) {
+        this.birth = Birth;
+    }
+
+    public String getSex() {
+        return this.sex;
+    }
+
+    public void setSex(String Sex) {
+        this.sex = Sex;
+    }
+
+    public String getIp() {
+        return this.ip;
+    }
+
+    public void setIp(String Ip) {
+        this.ip = Ip;
+    }
+
+    public String getRegistration() {
+        return this.registration;
+    }
+
+    public void setRegistration(String Registration) {
+        this.registration = Registration;
+    }
+
+    public String getLastlogin() {
+        return this.lastlogin;
+    }
+
+    public void setLastlogin(String Lastlogin) {
+        this.lastlogin = Lastlogin;
+    }
+
+    public String getLastsessionstart() {
+        return this.lastsessionstart;
+    }
+
+    public void setLastsessionstart(String Lastsessionstart) {
+        this.lastsessionstart = Lastsessionstart;
+    }
+
+    public Integer getActive() {
+        return this.active;
+    }
+
+    public void setActive(Integer Active) {
+        this.active = Active;
+    }
+
+    public Integer getBlocked() {
+        return this.blocked;
+    }
+
+    public void setBlocked(Integer Blocked) {
+        this.blocked = Blocked;
+    }
+
+    public String getHomepage() {
+        return this.homepage;
+    }
+
+    public void setHomepage(String Homepage) {
+        this.homepage = Homepage;
+    }
+
+    public String getProfilbild() {
+        return this.profilbild;
+    }
+
+    public void setProfilbild(String Profilbild) {
+        this.profilbild = Profilbild;
+    }
+
+    public String getBeschreibung() {
+        return this.beschreibung;
+    }
+
+    public void setBeschreibung(String Beschreibung) {
+        this.beschreibung = Beschreibung;
+    }
+
+    public String getComment() {
+        return this.comment;
+    }
+
+    public void setComment(String Comment) {
+        this.comment = Comment;
+    }
+
+    public String getPwsafe() {
+        return this.pwsafe;
+    }
+
+    public void setPwsafe(String Pwsafe) {
+        this.pwsafe = Pwsafe;
+    }
+
+    public String getSessionId() {
+        return this.sessionid;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionid = sessionId;
+    }
 
     public static Finder<Long,Users> find = new Finder<Long,Users>(
             Long.class, Users.class

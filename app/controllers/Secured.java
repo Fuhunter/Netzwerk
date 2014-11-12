@@ -7,6 +7,7 @@
 package controllers;
 
 import play.*;
+import play.db.ebean.Transactional;
 import play.mvc.*;
 import play.mvc.Http.*;
 
@@ -22,9 +23,11 @@ public class Secured extends Security.Authenticator {
      * @return
      */
     @Override
+    @Transactional
     public String getUsername(Context ctx) {
         // check if User is logged in
-        if (ctx.session().get("email") == null || ctx.session().get("email").equals("") || ctx.session().get("id") == null || ctx.session().get("id").equals("")) {
+        if (ctx.session().get("email") == null || ctx.session().get("email").equals("") || ctx.session().get("id") == null) {
+            ctx.session().clear();
             return null;
         }
 
@@ -32,7 +35,19 @@ public class Secured extends Security.Authenticator {
 
         String sessionid = ctx.session().get("id");
 
-        if (user.blocked == 1 || user.active == 0 || user.sessionid != sessionid) {
+        if (user.getBlocked() == 1 || user.getActive() == 0) {
+            user.setSessionId(null);
+            user.save();
+            return null;
+        }
+
+        // DAFUQ??? WIESO klappt das?!
+        if (user.getSessionId() == sessionid) {
+            Logger.debug(user.getSessionId());
+            Logger.debug(sessionid);
+            Logger.error("2");
+            user.setSessionId(null);
+            user.save();
             return null;
         }
 
@@ -45,6 +60,8 @@ public class Secured extends Security.Authenticator {
             if ((currentTime - prevT) > timeout) {
                 // session expired
                 ctx.session().clear();
+                user.setSessionId(null);
+                user.save();
                 return null;
             }
         }

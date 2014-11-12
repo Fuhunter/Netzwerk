@@ -17,6 +17,9 @@ import play.db.ebean.Transactional;
 import play.mvc.*;
 import views.html.*;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 public class Signup extends Controller {
 
     /**
@@ -80,14 +83,14 @@ public class Signup extends Controller {
         // Insert into Database
         try {
             Users newUser = new Users();
-            newUser.birth = day + "." + month + "." + year;
-            newUser.email = email;
-            newUser.vorname = vorname;
-            newUser.nachname = nachname;
-            newUser.sex = geschlecht;
-            newUser.pwsafe = hashpass;
-            newUser.active = 1;
-            newUser.blocked = 0;
+            newUser.setBirth(day + "." + month + "." + year);
+            newUser.setEmail(email);
+            newUser.setVorname(vorname);
+            newUser.setNachname(nachname);
+            newUser.setSex(geschlecht);
+            newUser.setPwsafe(hashpass);
+            newUser.setActive(1);
+            newUser.setBlocked(0);
             newUser.save();
 
             /*
@@ -122,6 +125,7 @@ public class Signup extends Controller {
              */
         }
         catch (Exception e) {
+            Logger.error("Error", e);
             return badRequest(signup.render(true, "Datenbank Fehler"));
         }
 
@@ -147,7 +151,7 @@ public class Signup extends Controller {
         if (user == null) {
             return badRequest(login.render(true, "Email Adresse falsch!"));
         }
-        else if (BCrypt.checkpw(password,user.pwsafe) == false) {
+        else if (BCrypt.checkpw(password,user.getPwsafe()) == false) {
             return badRequest(login.render(true, "Falsches Passwort!"));
         }
         else {
@@ -159,10 +163,17 @@ public class Signup extends Controller {
                 session("id", id);
             }
 
-            user.sessionid = session().get("id");
-            user.save();
+
+            user.setSessionId(session().get("id"));
+            try {
+                user.save();
+                Logger.debug(session().get("id"));
+            } catch (Exception e) {
+                Logger.error("error", e);
+            }
+
             session("email", email);
-            session("userid", Long.toString(user.id));
+            session("userid", Long.toString(user.getId()));
 
             return redirect(routes.Network.index());
         }
@@ -188,7 +199,7 @@ public class Signup extends Controller {
     @Transactional
     public static Result logout() {
         Users user = Users.findByEmail(session().get("email"));
-        user.sessionid = null;
+        user.setSessionId(null);
         user.save();
         session().clear();
         return redirect(routes.Application.index());
