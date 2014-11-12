@@ -14,20 +14,20 @@ import play.data.DynamicForm;
 import play.db.ebean.Transactional;
 import play.mvc.*;
 import views.html.*;
+import models.Groupsmodel;
 
 
 public class Groups extends Controller {
 
     /**
      * If authenticated render Indexpage
+     *
      * @return
      */
     @Security.Authenticated(Secured.class)
     public static Result index() {
         return ok(groups.render(session().get("email"), "bla"));
     }
-
-
 
 
     @Security.Authenticated(Secured.class)
@@ -44,5 +44,19 @@ public class Groups extends Controller {
         }
 
         return ok(groups.render(session().get("email"), "Success"));
+        // Insert into Database
+        try {
+            Groupsmodel newGroup = new Groupsmodel();
+            newGroup.setGruppenname(gruppenname);
+            newGroup.setGruppenbeschreibung(gruppenbeschreibung);
+            newGroup.setGruppentags(gruppentags);
+            newGroup.save();
+        }
+        catch (Exception e) {
+            Logger.error("Error", e);
+            return badRequest(groups.render(true, "Datenbank Fehler"));
+        }
+
+        return ok(groups.render(false, "Success"));
     }
 }

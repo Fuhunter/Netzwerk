@@ -1,18 +1,18 @@
 /**
- * @author Thomas Dennhardt, Christoph Gaudl and Niclas Günther
- *
- * User Database Model
- */
+     * @author Thomas Dennhardt, Christoph Gaudl and Niclas Günther
+     *
+     * User Database Model
+     */
 
-package models;
+    package models;
 
-import play.db.ebean.*;
-import play.data.validation.*;
-import java.util.*;
-import javax.persistence.*;
+    import play.db.ebean.*;
+    import play.data.validation.*;
+    import java.util.*;
+    import javax.persistence.*;
 
-@Entity
-public class Users extends Model {
+    @Entity
+    public class Users extends Model {
 
     @Id
     protected Long id;
