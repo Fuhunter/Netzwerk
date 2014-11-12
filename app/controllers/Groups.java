@@ -33,6 +33,7 @@ public class Groups extends Controller {
         DynamicForm newGroupForm = new DynamicForm().bindFromRequest();
         String gruppenname = newGroupForm.get("gruppenname");
         String gruppenbeschreibung = newGroupForm.get("gruppenbeschreibung");
+        String gruppentags = newGroupForm.get("gruppentags");
         return ok(groups.render(session().get("email"), "Success"));
     }
 }
