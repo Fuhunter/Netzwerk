@@ -32,16 +32,17 @@ public class Groups extends Controller {
 
     @Security.Authenticated(Secured.class)
     @Transactional
-    public static Result register(){
+    public static Result register() {
         DynamicForm newGroupForm = new DynamicForm().bindFromRequest();
         String gruppenname = newGroupForm.get("gruppenname");
         String gruppenbeschreibung = newGroupForm.get("gruppenbeschreibung");
         String gruppentags = newGroupForm.get("gruppentags");
-        return ok(groups.render(session().get("email"), "Success"));
-
 
         // Check for empty field
         if (gruppenname.isEmpty() == true || gruppenname == "") {
-            return  badRequest(signup.render(true, "Gruppenname darf nicht leer sein"));
+            return badRequest(groups.render(session().get("email"), "Gruppenname darf nicht leer sein"));
+        }
+
+        return ok(groups.render(session().get("email"), "Success"));
     }
 }
