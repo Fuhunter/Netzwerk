@@ -42,7 +42,7 @@ public class Secured extends Security.Authenticator {
         }
 
         // DAFUQ??? WIESO klappt das?!
-        if (user.getSessionId() == sessionid) {
+        if (!user.getSessionId().equals(sessionid)) {
             Logger.debug(user.getSessionId());
             Logger.debug(sessionid);
             Logger.error("2");
