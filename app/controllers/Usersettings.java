@@ -29,6 +29,9 @@ public class Usersettings extends Controller {
             sex = true;
         }
 
+        String birth[] = user.getBirth().split(".");
+        int ubirth[] = {Integer.parseInt(birth[0]), Integer.parseInt(birth[2])};
+
         return ok(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), false, ""));
     }
 
