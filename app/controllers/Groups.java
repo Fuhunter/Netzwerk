@@ -15,6 +15,8 @@ import play.db.ebean.Transactional;
 import play.mvc.*;
 import views.html.*;
 import models.Groupsmodel;
+import models.Gruppenmitglieder;
+import models.Users;
 
 
 public class Groups extends Controller {
@@ -50,6 +52,8 @@ public class Groups extends Controller {
             newGroup.setGruppenbeschreibung(gruppenbeschreibung);
             newGroup.setGruppentags(gruppentags);
             newGroup.save();
+            Gruppenmitglieder newMember = new Gruppenmitglieder();
+            newMember.setGroup(newGroup.getId());
         }
         catch (Exception e) {
             Logger.error("Error", e);
@@ -58,4 +62,9 @@ public class Groups extends Controller {
 
         return ok(groups.render(session().get("email"), false, "Success"));
     }
+
+    public static String getUserId(){
+       return session().get("id");
+    }
+
 }
