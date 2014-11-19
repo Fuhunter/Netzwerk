@@ -26,7 +26,5 @@ POST    /groups                     controllers.Groups.register()
 GET     /settings                   controllers.Usersettings.index()
 POST    /settings                   controllers.Usersettings.update()
 
-POST    /settings                   controllers.Usersettings.changePassword()
-
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

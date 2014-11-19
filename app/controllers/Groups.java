@@ -64,7 +64,7 @@ public class Groups extends Controller {
     }
 
     public static String getUserId(){
-       return session().get("id");
+       return session().get("userid");
     }
 
 }
