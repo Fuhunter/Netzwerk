@@ -14,9 +14,6 @@ import play.db.ebean.Transactional;
 import play.mvc.*;
 import views.html.*;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class Usersettings extends Controller {
 
     /**
@@ -33,11 +30,9 @@ public class Usersettings extends Controller {
             sex = true;
         }
 
-        String[] birth = user.getBirth().split(".");
+        String[] birth = user.getBirth().split("\\.");
 
-        //int ubirth[] = {Integer.parseInt(birth[0]), Integer.parseInt(birth[2])};
-
-        return ok(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), birth, false, ""));
+        return ok(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), Integer.parseInt(birth[0]), birth[1], Integer.parseInt(birth[2]), false, ""));
     }
 
     /**
@@ -49,10 +44,44 @@ public class Usersettings extends Controller {
     public static Result update() {
         DynamicForm changes = new DynamicForm().bindFromRequest();
 
+        String vorname = changes.get("vorname");
+        String nachname = changes.get("nachname");
+        String email = changes.get("email");
+        String homepage = changes.get("homepage");
+        String geschlecht = changes.get("geschlecht");
+        String day = changes.get("tt");
+        String month = changes.get("mm");
+        String year = changes.get("yyyy");
+
+        try {
+            // Check for empty field
+            if (vorname.isEmpty() == true || vorname == "") {
+                return redirect(routes.Usersettings.index());
+
+            } else if (nachname.isEmpty() == true || nachname == "") {
+                return redirect(routes.Usersettings.index());
+
+            } else if (email.isEmpty() == true || email == "") {
+                return redirect(routes.Usersettings.index());
+            }
+        } catch (Exception e) {
+            return changePassword(changes, Users.findByEmail(session().get("email")));
+        }
+
         Users user = Users.findByEmail(session().get("email"));
 
-        if (changes.get("apassword") != null || !changes.get("apassword").isEmpty()) {
-            return changePassword(changes, user);
+        try {
+            if (changes.get("apassword") != null || !changes.get("apassword").isEmpty()) {
+                return changePassword(changes, user);
+            }
+        } catch (Exception e) {
+            user.setBirth(day + "." + month + "." + year);
+            user.setEmail(email);
+            user.setVorname(vorname);
+            user.setNachname(nachname);
+            user.setSex(geschlecht);
+            user.setHomepage(homepage);
+            user.save();
         }
 
         return redirect(routes.Usersettings.index());
@@ -71,21 +100,22 @@ public class Usersettings extends Controller {
             sex = true;
         }
 
-        String[] birth = user.getBirth().split(".");
-        //int ubirth[] = {Integer.parseInt(birth[0]), Integer.parseInt(birth[2])};
+        String[] birth = user.getBirth().split("\\.");
 
         if (BCrypt.checkpw(oldpw, user.getPwsafe())) {
-            if (newpw == checkpw) {
-                String hashpw = BCrypt.hashpw(newpw, BCrypt.gensalt(12));
+            String hashpw = BCrypt.hashpw(newpw, BCrypt.gensalt(12));
+            Boolean matched = BCrypt.checkpw(checkpw, hashpw);
+            if (matched == true) {
                 user.setPwsafe(hashpw);
                 user.save();
             } else {
-                return badRequest(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), birth, true, "Passwörter stimmen nicht überein!"));
+                return badRequest(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), Integer.parseInt(birth[0]), birth[1], Integer.parseInt(birth[2]), true, "Passwörter stimmen nicht überein!"));
             }
         } else {
-            return badRequest(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), birth, true, "Falsches Passwort"));
+            return badRequest(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), Integer.parseInt(birth[0]), birth[1], Integer.parseInt(birth[2]), true, "Falsches Passwort"));
         }
 
-        return ok(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), birth, false, "Success!"));
+        return ok(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), Integer.parseInt(birth[0]), birth[1], Integer.parseInt(birth[2]), false, "Success!"));
+
     }
 }
