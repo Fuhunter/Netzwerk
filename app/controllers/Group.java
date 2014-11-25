@@ -40,6 +40,7 @@ public class Group extends Controller {
         if (gruppenname.isEmpty() == true || gruppenname == "") {
             return badRequest(groups.render(session().get("email"), true, "Gruppenname darf nicht leer sein"));
         }
+        // Check if groupname is unique
         Groups checkGroup = Groups.findByGruppenname(gruppenname);
         if (checkGroup != null){
             return badRequest(groups.render(session().get("email"), true, "Gruppenname darf nicht doppelt vorkommen"));

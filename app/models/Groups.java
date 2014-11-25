@@ -61,4 +61,5 @@ public class Groups extends Model {
     public static Groups findByGruppenname(String gruppenname) {
         return find.where().eq("gruppenname", gruppenname).findUnique();
     }
+
 }
