@@ -46,12 +46,26 @@ public class Usersettings extends Controller {
 
         String vorname = changes.get("vorname");
         String nachname = changes.get("nachname");
-        String email = changes.get("email");
         String homepage = changes.get("homepage");
         String geschlecht = changes.get("geschlecht");
         String day = changes.get("tt");
         String month = changes.get("mm");
         String year = changes.get("yyyy");
+
+
+        Users user = Users.findByEmail(session().get("email"));
+
+        try {
+            Boolean del = Boolean.valueOf(changes.get("delete"));
+
+            if (!del) {
+                user.delete();
+                session().clear();
+                return redirect(routes.Signup.loginPage());
+            }
+        } catch (Exception e) {
+
+        }
 
         try {
             // Check for empty field
@@ -60,15 +74,10 @@ public class Usersettings extends Controller {
 
             } else if (nachname.isEmpty() == true || nachname == "") {
                 return redirect(routes.Usersettings.index());
-
-            } else if (email.isEmpty() == true || email == "") {
-                return redirect(routes.Usersettings.index());
             }
         } catch (Exception e) {
-            return changePassword(changes, Users.findByEmail(session().get("email")));
+            return changePassword(changes, user);
         }
-
-        Users user = Users.findByEmail(session().get("email"));
 
         try {
             if (changes.get("apassword") != null || !changes.get("apassword").isEmpty()) {
@@ -76,7 +85,6 @@ public class Usersettings extends Controller {
             }
         } catch (Exception e) {
             user.setBirth(day + "." + month + "." + year);
-            user.setEmail(email);
             user.setVorname(vorname);
             user.setNachname(nachname);
             user.setSex(geschlecht);
