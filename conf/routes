@@ -20,8 +20,8 @@ GET     /login                      controllers.Signup.loginPage()
 GET     /network                    controllers.Network.index()
 GET     /logout                     controllers.Signup.logout()
 
-GET     /groups                     controllers.Groups.index()
-POST    /groups                     controllers.Groups.register()
+GET     /groups                     controllers.Group.index()
+POST    /groups                     controllers.Group.register()
 
 GET     /settings                   controllers.Usersettings.index()
 POST    /settings                   controllers.Usersettings.update()

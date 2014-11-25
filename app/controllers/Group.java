@@ -6,20 +6,16 @@
 
 package controllers;
 
+import models.Groupmembers;
+import models.Groups;
 import play.*;
-import play.data.*;
-import play.data.Form.*;
-import com.avaje.ebean.Ebean;
 import play.data.DynamicForm;
 import play.db.ebean.Transactional;
 import play.mvc.*;
 import views.html.*;
-import models.Groupsmodel;
-import models.Gruppenmitglieder;
-import models.Users;
 
 
-public class Groups extends Controller {
+public class Group extends Controller {
 
     /**
      * If authenticated render Indexpage
@@ -47,12 +43,12 @@ public class Groups extends Controller {
 
         // Insert into Database
         try {
-            Groupsmodel newGroup = new Groupsmodel();
+            Groups newGroup = new models.Groups();
             newGroup.setGruppenname(gruppenname);
             newGroup.setGruppenbeschreibung(gruppenbeschreibung);
             newGroup.setGruppentags(gruppentags);
             newGroup.save();
-            Gruppenmitglieder newMember = new Gruppenmitglieder();
+            Groupmembers newMember = new Groupmembers();
             newMember.setGroup(newGroup.getId());
         }
         catch (Exception e) {
@@ -62,9 +58,4 @@ public class Groups extends Controller {
 
         return ok(groups.render(session().get("email"), false, "Success"));
     }
-
-    public static String getUserId(){
-       return session().get("userid");
-    }
-
 }

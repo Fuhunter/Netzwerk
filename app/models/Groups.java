@@ -7,12 +7,11 @@
 package models;
 
 import play.db.ebean.*;
-import play.data.validation.*;
-import java.util.*;
+
 import javax.persistence.*;
 
 @Entity
-public class Groupsmodel extends Model {
+public class Groups extends Model {
 
     @Id
     protected Long group_id;
@@ -55,11 +54,11 @@ public class Groupsmodel extends Model {
         this.gruppentags = Gruppentags;
     }
 
-    public static Finder<Long,Groupsmodel> find = new Finder<Long,Groupsmodel>(
-            Long.class, Groupsmodel.class
+    public static Finder<Long, Groups> find = new Finder<Long, Groups>(
+            Long.class, Groups.class
     );
 
-    public static Groupsmodel findByGruppenname(String gruppenname) {
+    public static Groups findByGruppenname(String gruppenname) {
         return find.where().eq("gruppenname", gruppenname).findUnique();
     }
 }

@@ -12,12 +12,10 @@ import java.util.*;
 import javax.persistence.*;
 
 @Entity
-public class Gruppenmitglieder extends Model {
+public class Groupmembers extends Model {
 
-    @Id
     protected Long groups;
 
-    @Id
     protected Long users;
 
     public Long getId() {
