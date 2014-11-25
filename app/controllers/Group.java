@@ -40,6 +40,10 @@ public class Group extends Controller {
         if (gruppenname.isEmpty() == true || gruppenname == "") {
             return badRequest(groups.render(session().get("email"), true, "Gruppenname darf nicht leer sein"));
         }
+        Groups checkGroup = Groups.findByGruppenname(gruppenname);
+        if (checkGroup != null){
+            return badRequest(groups.render(session().get("email"), true, "Gruppenname darf nicht doppelt vorkommen"));
+        }
 
         // Insert into Database
         try {
@@ -48,8 +52,10 @@ public class Group extends Controller {
             newGroup.setGruppenbeschreibung(gruppenbeschreibung);
             newGroup.setGruppentags(gruppentags);
             newGroup.save();
-            Groupmembers newMember = new Groupmembers();
+            Groupmembers newMember = new models.Groupmembers();
+            newMember.setMember(Long.parseLong(session().get("userid")));
             newMember.setGroup(newGroup.getId());
+            newMember.save();
         }
         catch (Exception e) {
             Logger.error("Error", e);

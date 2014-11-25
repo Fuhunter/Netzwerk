@@ -14,34 +14,35 @@ import javax.persistence.*;
 @Entity
 public class Groupmembers extends Model {
 
-    protected Long groups;
+    @Id
+    protected Long id;
 
-    protected Long users;
+    protected Long user_id;
+
+    protected Long group_id;
 
     public Long getId() {
-        return (this.groups);
+        return (this.id);
     }
 
     public void setId(Long ID) {
-        this.groups = ID;
-        this.users = ID;
+        this.id = ID;
     }
 
     public void setMember(Long users){
-        this.users = users;
+        this.user_id = users;
     }
 
-
     public Long getMember(Long users){
-        return(this.users);
+        return(this.user_id);
     }
 
     public Long getGroup(Long groups){
-        return(this.groups);
+        return(this.group_id);
     }
 
     public void setGroup(Long groups){
-        this.groups = groups;
+        this.group_id = groups;
     }
 
 }
