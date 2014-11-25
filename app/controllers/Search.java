@@ -21,6 +21,7 @@ public class Search extends Controller {
     public static Result search() {
         DynamicForm sform = new DynamicForm().bindFromRequest();
 
+
         return ok(search.render(session().get("email"), false, ""));
     }
 }
