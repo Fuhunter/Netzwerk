@@ -21,7 +21,7 @@ import java.util.List;
 public class Search extends Controller {
 
     public static Result index() {
-        return ok(search.render(session().get("email"), false, ""));
+        return ok(search.render(session().get("email"), "", null, false, ""));
     }
 
     public static Result search() {
@@ -30,21 +30,26 @@ public class Search extends Controller {
         String checker = sform.get("check");
 
         List<Users> result = null;
-        if (checker.equals("echeck")) {
-            String email = "%" + sform.get("email") + "%";
-            result = Users.find.where().like("email", email);
-        } else if (checker.equals("vcheck")) {
-            String vname = sform.get("vname");
-            result = Users.find.where().like("vorname", vname);
-        } else if (checker.equals("ncheck")) {
-            String nname = sform.get("nname");
-            result = Users.find.where().like("nachname", nname);
-        } else {
-            return badRequest(search.render(session().get("email"), false, ""));
+
+        try {
+            if (checker.equals("echeck")) {
+                String email = "%" + sform.get("email") + "%";
+                result = Users.find.where().like("email", email).findList();
+                return ok(search.render(session().get("email"), checker, result, false, "Ergebnisse weiter unten"));
+            } else if (checker.equals("vcheck")) {
+                String vname = "%" + sform.get("vname") + "%";
+                result = Users.find.where().like("vorname", vname).findList();
+                return ok(search.render(session().get("email"), checker, result, false, "Ergebnisse weiter unten"));
+            } else if (checker.equals("ncheck")) {
+                String nname = "%" + sform.get("nname") + "%";
+                result = Users.find.where().like("nachname", nname).findList();
+                return ok(search.render(session().get("email"), checker, result, false, "Ergebnisse weiter unten"));
+            }
+        } catch (Exception e) {
+            return badRequest(search.render(session().get("email"), "", null, true, "Du musst einen Suchparameter auswählen!"));
         }
 
-        return ok(String.valueOf(result.size()));
-        //return ok(search.render(session().get("email"), false, ""));
+        return null;
     }
 
     public static Result groupsearch() {

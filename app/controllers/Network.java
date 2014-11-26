@@ -10,6 +10,10 @@ import play.*;
 import play.mvc.*;
 import views.html.*;
 
+import models.*;
+
+import java.util.List;
+
 public class Network extends Controller {
 
     /**
@@ -19,5 +23,15 @@ public class Network extends Controller {
     @Security.Authenticated(Secured.class)
     public static Result index() {
         return ok(network.render(session().get("email")));
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Result statistics() {
+        Integer users = Users.find.findRowCount();
+        Integer groups = Groups.find.findRowCount();
+        Integer online = Users.find.where().isNotNull("sessionid").findRowCount();
+        //Integer owngroups = Groupmembers.find.where().eq("user_id", session().get("userid")).findRowCount();
+
+        return ok(statistics.render(session().get("email"), users, groups, online, 0));
     }
 }

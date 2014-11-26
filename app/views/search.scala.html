@@ -1,4 +1,4 @@
-@(email: String)(error: Boolean)(message: String)
+@(email: String)(order: String)(results: List[Users])(error: Boolean)(message: String)
 
 
 @main("Netzwerk") {
@@ -19,8 +19,16 @@
                 <li><a href="network">Home</a></li>
                 <li><a href="groups">Gruppen</a></li>
                 <li class="active"><a href="search">Suchen</a></li>
-                <li><a href="logout">Logout</a></li>
-                <li><a href="settings">Eingeloggt als: @email</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Eingeloggt als: @email<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="statistics">Statistiken</a></li>
+                        <li class="divider"></li>
+                        <li><a href="settings">Einstellungen</a></li>
+                        <li class="divider"></li>
+                        <li><a href="logout">Abmelden</a></li>
+                    </ul>
+                </li>
             </ul>
         </div><!--/.nav-collapse -->
     </div>
@@ -28,8 +36,8 @@
 
 <div class="container">
 
-    <div class="starter-template">
-        <h1>Benutzer suchen</h1>
+    <div class="search-template">
+        <h1 style="text-align: center;">Benutzer suchen</h1>
         <br>
         <br>
         <form role="form" class="form-horizontal" action="@routes.Search.search()" method="POST">
@@ -73,6 +81,78 @@
                 </div>
             </div>
         </form>
+
+        @if(order.equals("vcheck")) {
+            <div class="results">
+                <h2 style="text-align: center;">Ergebnisse</h2>
+                <table class="table table-hover">
+                    <thead>
+                        <th>#</th>
+                        <th>Vorname</th>
+                        <th>Nachname</th>
+                        <th>E-Mail Adresse</th>
+                    </thead>
+                    <tbody>
+                        @for((result, index) <- results.zipWithIndex) {
+                        <tr>
+                            <td>@{index + 1}</td>
+                            <td>@result.getVorname()</td>
+                            <td>@result.getNachname()</td>
+                            <td>@result.getEmail()</td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+        @if(order.equals("ncheck")) {
+        <div class="results">
+            <h2 style="text-align: center;">Ergebnisse</h2>
+            <table class="table table-hover">
+                <thead>
+                    <th>#</th>
+                    <th>Nachname</th>
+                    <th>Vorname</th>
+                    <th>E-Mail Adresse</th>
+                </thead>
+                <tbody>
+                    @for((result, index) <- results.zipWithIndex) {
+                    <tr>
+                        <td>@{index + 1}</td>
+                        <td>@result.getNachname()</td>
+                        <td>@result.getVorname()</td>
+                        <td>@result.getEmail()</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        }
+
+        @if(order.equals("echeck")) {
+        <div class="results">
+            <h2 style="text-align: center;">Ergebnisse</h2>
+            <table class="table table-hover">
+                <thead>
+                    <th>#</th>
+                    <th>E-Mail Adress</th>
+                    <th>Nachname</th>
+                    <th>Vorname</th>
+                </thead>
+                <tbody>
+                    @for((result, index) <- results.zipWithIndex) {
+                    <tr>
+                        <td>@{index + 1}</td>
+                        <td>@result.getEmail()</td>
+                        <td>@result.getNachname()</td>
+                        <td>@result.getVorname()</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        }
     </div>
 
 </div>

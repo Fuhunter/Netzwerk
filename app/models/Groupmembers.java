@@ -45,4 +45,7 @@ public class Groupmembers extends Model {
         this.group_id = groups;
     }
 
+    public static Finder<Long, Groups> find = new Finder<Long, Groups>(
+            Long.class, Groups.class
+    );
 }
