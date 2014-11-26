@@ -1,4 +1,4 @@
-@(email: String)
+@(email: String)(users: Integer)(groups: Integer)(online: Integer)(owngroups: Integer)
 
 
 @main("Netzwerk") {
@@ -37,10 +37,27 @@
 <div class="container">
 
     <div class="starter-template">
-        <h1>Willkommen zurück!</h1>
+        <h1>Statistiken</h1>
         <br>
         <br>
-        <h3>Zurzeit stehen noch keine weiteren Funktionen zur Verfügung! Diese werden jedoch bald erweitert.</h3>
+        <table class="table table-hover" style="text-align: left;">
+            <tr>
+                <td><b>Registrierte Benutzer</b></td>
+                <td>@users</td>
+            </tr>
+            <tr>
+                <td><b>Derzeit angemeldete Benutzer</b></td>
+                <td>@online</td>
+            </tr>
+            <tr>
+                <td><b>Registrierte Gruppen</b></td>
+                <td>@groups</td>
+            </tr>
+            <tr>
+                <td><b>Beigetretene Gruppen</b></td>
+                <td>@owngroups</td>
+            </tr>
+        </table>
     </div>
 
 </div>

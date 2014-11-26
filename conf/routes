@@ -29,5 +29,7 @@ POST    /settings                   controllers.Usersettings.update()
 GET     /search                     controllers.Search.index()
 POST    /search                     controllers.Search.search()
 
+GET     /statistics                 controllers.Network.statistics()
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
