@@ -14,6 +14,8 @@ import play.db.ebean.Transactional;
 import play.mvc.*;
 import views.html.*;
 
+import java.util.List;
+
 
 public class Group extends Controller {
 
@@ -64,4 +66,5 @@ public class Group extends Controller {
 
         return ok(groups.render(session().get("email"), false, "Success"));
     }
+
 }
