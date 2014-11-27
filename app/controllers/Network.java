@@ -48,21 +48,24 @@ public class Network extends Controller {
 
     @Security.Authenticated(Secured.class)
     public static Result showGroup(String name) {
-       /** List<Users> result = null;
-        List<Groupmembers> members = Groupmembers.find.findList();
-        for (int i=0; i<members.size(); i++){
-            Groupmembers helpmember = members.get(i);
-            result.add(Users.findById(helpmember.getMember()));
-        }*/
         Groups group = Groups.findByGruppenname(name);
-        if(Groupmembers.find.where().eq("user_id", session().get("userid")).eq("group_id", group.getId()).findRowCount() == 0){
-            return badRequest(groupprofile.render(session().get("email"), group, false));
+        List<Groupmembers> gmembers = Groupmembers.find.where().eq("group_id", group.getId()).findList();
+        List<Users> gmemberss = null;
+
+        for (int i = 0; i < gmembers.size(); i++) {
+            gmemberss.add(i, Users.findById(gmembers.get(i).getId()));
         }
+
+        if(Groupmembers.find.where().eq("user_id", session().get("userid")).eq("group_id", group.getId()).findRowCount() == 0) {
+            return badRequest(groupprofile.render(session().get("email"), group, false, gmemberss));
+        }
+
+
         Groupmembers member = Groupmembers.findById(Long.parseLong(session().get("userid")), group.getId());
         if (member.getMember() == Long.parseLong(session().get("userid")) && member.getGroup() == group.getId()) {
-            return ok(groupprofile.render(session().get("email"), group, true));
+            return ok(groupprofile.render(session().get("email"), group, true, gmemberss));
         }
-        return badRequest(groupprofile.render(session().get("email"), group, false));
+        return badRequest(groupprofile.render(session().get("email"), group, false, gmemberss));
 
     }
 

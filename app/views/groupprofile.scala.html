@@ -1,7 +1,7 @@
-@(email: String)(group: Groups)(checker: Boolean)
+@(email: String)(group: Groups)(checker: Boolean)(members: List[Users])
 
 @userid = {@session.get("userid")}
-@groupname = {@group.getGruppenname}
+@groupname = {@group.getGruppenname()}
 
 @main("Groupprofile") {
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
