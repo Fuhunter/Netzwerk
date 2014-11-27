@@ -1,4 +1,4 @@
-@(email: String)(error: Boolean)(message: String)
+@(email: String)(results: List[Groups])(error: Boolean)(message: String)
 
 
 @main("Netzwerk") {
@@ -17,9 +17,9 @@
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
                 <li><a href="network">Home</a></li>
-                <li class = "active"><a href="groups">Gruppen</a></li>
-                <li><a href="search">Suchen</a></li>
-                <li><a herf="groupsearch">Gruppensuche</a></li>
+                <li><a href="groups">Gruppen</a></li>
+                <li ><a href="search">Suchen</a></li>
+                <li class="active"><a herf="groupsearch">Gruppensuche</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Eingeloggt als: @email<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -37,39 +37,23 @@
 
 <div class="container">
 
-    <div class="starter-template">
-        <h1>Gruppen</h1>
+    <div class="search-template">
+        <h1 style="text-align: center;">Gruppen suchen</h1>
         <br>
         <br>
-        <form role="form" class="form-horizontal" action="@routes.Group.register()" method="POST">
+        <form role="form" class="form-horizontal" action="@routes.Groupsearch.search()" method="POST">
             <div class="form-group">
-                <label for="gruppenname" class="col-sm-2 control-label">Gruppenname</label>
+                <label for="group" class="col-sm-2 control-label">Nach Gruppen suchen</label>
                 <div class="col-sm-10">
                     <div class="col-xs-4">
-                        <input type="text" class="form-control" id="gruppenname" name="gruppenname" placeholder="Gruppenname">
-                    </div>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="gruppenbeschreibung" class="col-sm-2 control-label">Gruppenbeschreibung:</label>
-                    <div class="col-sm-10">
-                        <div class="col-xs-4">
-                            <textarea type="text" class="form-control" rows="3" id="gruppenbeschreibung" name="gruppenbeschreibung" placeholder="Gruppenbeschreibung"></textarea>
-                        </div>
-                    </div>
-             </div>
-            <div class="form-group">
-                <label for="gruppentags" class="col-sm-2 control-label">Gruppentags</label>
-                <div class="col-sm-10">
-                    <div class="col-xs-4">
-                        <input type="text" class="form-control" id="gruppentags" name="gruppentags" placeholder="Gruppentags">
+                        <input type="text" class="form-control" id="group" name="group" placeholder="Gruppenname">
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <div class="col-xs-4">
-                        <button type="submit" class="btn btn-default">Gruppe erstellen</button>
+                        <button type="submit" class="btn btn-default">Suchen</button>
                         @if(error == true) {
                         <span class="text-warning">@message</span>
                         } else {
@@ -79,6 +63,28 @@
                 </div>
             </div>
         </form>
+
+        <div class="results">
+            <h2 style="text-align: center;">Ergebnisse</h2>
+            <table class="table table-hover">
+                <thead>
+                <th>#</th>
+                <th>Gruppenname</th>
+                <th>Gruppenbeschreibung</th>
+                <th>Gruppentags</th>
+                </thead>
+                <tbody>
+                @for((result, index) <- results.zipWithIndex) {
+                <tr>
+                    <td>@{index + 1}</td>
+                    <td>@result.getGruppenname()</td>
+                    <td>@result.getGruppenbeschreibung()</td>
+                    <td>@result.getGruppentags()</td>
+                </tr>
+                }
+                </tbody>
+            </table>
+        </div>
     </div>
+    }
 </div>
-}
