@@ -213,7 +213,7 @@
         return find.where().eq("email", email).findUnique();
     }
 
-    public static Users findById(String id) {
+    public static Users findById(Long id) {
         return find.where().eq("id", id).findUnique();
     }
 }

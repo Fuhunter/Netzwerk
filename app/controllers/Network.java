@@ -30,8 +30,18 @@ public class Network extends Controller {
         Integer users = Users.find.findRowCount();
         Integer groups = Groups.find.findRowCount();
         Integer online = Users.find.where().isNotNull("sessionid").findRowCount();
-        //Integer owngroups = Groupmembers.find.where().eq("user_id", session().get("userid")).findRowCount();
+        Integer owngroups = Groupmembers.find.where().eq("user_id", session().get("userid")).findRowCount();
 
-        return ok(statistics.render(session().get("email"), users, groups, online, 0));
+        return ok(statistics.render(session().get("email"), users, groups, online, owngroups));
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Result showUser(Long id) {
+        Users user = Users.findById(id);
+
+        if (user == null) {
+            return badRequest(userprofile.render(session().get("email"), null));
+        }
+        return ok(userprofile.render(session().get("email"), user));
     }
 }

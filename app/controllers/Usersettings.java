@@ -32,7 +32,7 @@ public class Usersettings extends Controller {
 
         String[] birth = user.getBirth().split("\\.");
 
-        return ok(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), Integer.parseInt(birth[0]), birth[1], Integer.parseInt(birth[2]), false, ""));
+        return ok(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), Integer.parseInt(birth[0]), birth[1], Integer.parseInt(birth[2]), user.getWohnort(), user.getBeschreibung(), false, ""));
     }
 
     /**
@@ -51,6 +51,8 @@ public class Usersettings extends Controller {
         String day = changes.get("tt");
         String month = changes.get("mm");
         String year = changes.get("yyyy");
+        String wohnort = changes.get("wohnort");
+        String beschreibung = changes.get("beschreibung");
 
 
         Users user = Users.findByEmail(session().get("email"));
@@ -89,6 +91,8 @@ public class Usersettings extends Controller {
             user.setNachname(nachname);
             user.setSex(geschlecht);
             user.setHomepage(homepage);
+            user.setBeschreibung(beschreibung);
+            user.setWohnort(wohnort);
             user.save();
         }
 
@@ -117,13 +121,13 @@ public class Usersettings extends Controller {
                 user.setPwsafe(hashpw);
                 user.save();
             } else {
-                return badRequest(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), Integer.parseInt(birth[0]), birth[1], Integer.parseInt(birth[2]), true, "Passwörter stimmen nicht überein!"));
+                return badRequest(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), Integer.parseInt(birth[0]), birth[1], Integer.parseInt(birth[2]), user.getWohnort(), user.getBeschreibung(), true, "Passwörter stimmen nicht überein!"));
             }
         } else {
-            return badRequest(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), Integer.parseInt(birth[0]), birth[1], Integer.parseInt(birth[2]), true, "Falsches Passwort"));
+            return badRequest(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), Integer.parseInt(birth[0]), birth[1], Integer.parseInt(birth[2]), user.getWohnort(), user.getBeschreibung(), true, "Falsches Passwort"));
         }
 
-        return ok(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), Integer.parseInt(birth[0]), birth[1], Integer.parseInt(birth[2]), false, "Success!"));
+        return ok(settings.render(user.getEmail(), user.getVorname(), user.getNachname(), sex, user.getHomepage(), Integer.parseInt(birth[0]), birth[1], Integer.parseInt(birth[2]), user.getWohnort(), user.getBeschreibung(),false, "Success!"));
 
     }
 }
