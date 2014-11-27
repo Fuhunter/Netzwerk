@@ -188,7 +188,7 @@
                 @for((result, index) <- groups.zipWithIndex) {
                 <tr>
                     <td>@{index + 1}</td>
-                    <td>@result.getGruppenname()</td>
+                    <td><a href = "/groupprofile/@result.getGruppenname()">@result.getGruppenname()</a></td>
                     <td>@result.getGruppenbeschreibung()</td>
                     <td>@result.getGruppentags()</td>
                 </tr>

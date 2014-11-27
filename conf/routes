@@ -33,5 +33,7 @@ GET     /statistics                 controllers.Network.statistics()
 
 GET     /userprofile/:id            controllers.Network.showUser(id: Long)
 
+GET     /groupprofile/:gruppenname  controllers.Network.showGroup(gruppenname: String)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
