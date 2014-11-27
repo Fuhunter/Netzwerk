@@ -62,4 +62,8 @@ public class Groups extends Model {
         return find.where().eq("gruppenname", gruppenname).findUnique();
     }
 
+    public static Groups findById(Long id) {
+        return find.where().eq("group_id", id).findUnique();
+    }
+
 }

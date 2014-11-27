@@ -53,22 +53,18 @@
             <br>
             <h3>@group.getGruppenbeschreibung()</h3>
         </div>
+    </div>
 
         @if(checker){
-        <form role="form" class="form-horizontal" action="@routes.Network.leavegroup()" method="GET">
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <div class="col-xs-4">
-                        <button type="submit" class="btn btn-default">Gruppe verlassen</button>
-                        @if(error == true) {
-                        <span class="text-warning">@message</span>
-                        } else {
-                        <span class="text-success">@message</span>
-                        }
-                    </div>
-                </div>
-        </div>
-        </form>
+            <div class="starter-template">
+                <h3><a href = "/groupsite/@group.getGruppenname()">Gruppe verlassen</a></h3>
+            </div>
+        }
+
+        @if(!checker){
+            <div class="starter-template">
+                <h3><a href = "/groupenter/@group.getGruppenname()">Gruppe beitreten</a></h3>
+            </div>
         }
 
     </div>

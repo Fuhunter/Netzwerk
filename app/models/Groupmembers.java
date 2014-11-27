@@ -33,11 +33,11 @@ public class Groupmembers extends Model {
         this.user_id = users;
     }
 
-    public Long getMember(Long users){
+    public Long getMember(){
         return(this.user_id);
     }
 
-    public Long getGroup(Long groups){
+    public Long getGroup(){
         return(this.group_id);
     }
 
@@ -45,7 +45,14 @@ public class Groupmembers extends Model {
         this.group_id = groups;
     }
 
-    public static Finder<Long, Groups> find = new Finder<Long, Groups>(
-            Long.class, Groups.class
+    public static Finder<Long, Groupmembers> find = new Finder<Long, Groupmembers>(
+            Long.class, Groupmembers.class
     );
+
+    public static Groupmembers findById(long user_id, long group_id){
+
+        return find.where().eq("user_id", user_id).eq("group_id", group_id).findUnique();
+    }
+
+
 }
