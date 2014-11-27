@@ -47,13 +47,18 @@ public class Network extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result showGroup(String name) {
-        Groups group = Groups.findByGruppenname(name);
+    public static Result showGroup(String gruppenname) {
+        Groups group = Groups.findByGruppenname(gruppenname);
         List<Groupmembers> gmembers = Groupmembers.find.where().eq("group_id", group.getId()).findList();
-        List<Users> gmemberss = null;
+        List<Users> gmemberss = new ArrayList<Users>();
 
-        for (int i = 0; i < gmembers.size(); i++) {
-            gmemberss.add(i, Users.findById(gmembers.get(i).getId()));
+        if (gmembers.size() != 0) {
+            for (Groupmembers user : gmembers) {
+                Users member = Users.findById(user.getId());
+                if (member != null) {
+                    gmemberss.add(member);
+                }
+            }
         }
 
         if(Groupmembers.find.where().eq("user_id", session().get("userid")).eq("group_id", group.getId()).findRowCount() == 0) {
