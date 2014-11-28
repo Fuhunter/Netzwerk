@@ -111,6 +111,7 @@
                         <th>Vorname</th>
                         <th>Nachname</th>
                         <th>E-Mail Adresse</th>
+                        <th>Befreundet</th>
                     </thead>
                     <tbody>
                         @for((result, index) <- results.zipWithIndex) {
@@ -119,6 +120,7 @@
                             <td>@result.getVorname()</td>
                             <td>@result.getNachname()</td>
                             <td>@result.getEmail()</td>
+                            <td></td>
                         </tr>
                         }
                     </tbody>
@@ -135,6 +137,7 @@
                     <th>Nachname</th>
                     <th>Vorname</th>
                     <th>E-Mail Adresse</th>
+                    <th>Befreundet</th>
                 </thead>
                 <tbody>
                     @for((result, index) <- results.zipWithIndex) {
@@ -143,6 +146,7 @@
                         <td>@result.getNachname()</td>
                         <td>@result.getVorname()</td>
                         <td>@result.getEmail()</td>
+                        <td></td>
                     </tr>
                     }
                 </tbody>
@@ -159,6 +163,7 @@
                     <th>E-Mail Adress</th>
                     <th>Nachname</th>
                     <th>Vorname</th>
+                    <th>Befreundet</th>
                 </thead>
                 <tbody>
                     @for((result, index) <- results.zipWithIndex) {
@@ -167,6 +172,7 @@
                         <td>@result.getEmail()</td>
                         <td>@result.getNachname()</td>
                         <td>@result.getVorname()</td>
+                        <td></td>
                     </tr>
                     }
                 </tbody>

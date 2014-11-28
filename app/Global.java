@@ -18,7 +18,7 @@ public class Global extends GlobalSettings {
      * @param request
      * @param t
      * @return
-     */
+     *
     public Promise<Result> onError(RequestHeader request, Throwable t) {
         return Promise.<Result>pure(internalServerError(views.html.errorPage.render(t)));
     }
