@@ -26,6 +26,10 @@ public class Network extends Controller {
         return ok(network.render(session().get("email")));
     }
 
+    /**
+     * Show Endorado statistics
+     * @return
+     */
     @Security.Authenticated(Secured.class)
     public static Result statistics() {
         Integer users = Users.find.findRowCount();
@@ -36,16 +40,46 @@ public class Network extends Controller {
         return ok(statistics.render(session().get("email"), users, groups, online, owngroups));
     }
 
+    /**
+     * Show user profile
+     * @param id
+     * @return
+     */
     @Security.Authenticated(Secured.class)
     public static Result showUser(Long id) {
         Users user = Users.findById(id);
 
         if (user == null) {
-            return badRequest(userprofile.render(session().get("email"), null));
+            return badRequest(userprofile.render(session().get("email"), null, null, null, null));
         }
-        return ok(userprofile.render(session().get("email"), user));
+
+        Integer check = Friendship.find.where().eq("friend_id", id).eq("user_id", session().get("userid")).findRowCount();
+        Integer check1 = Friendship.find.where().eq("friend_id", session().get("userid")).eq("user_id", id).findRowCount();
+
+        Boolean friends = false;
+        Boolean ufriended = false;
+        Boolean hfriended = false;
+
+        if (check == 1) {
+            ufriended = true;
+        }
+
+        if (check1 == 1) {
+            hfriended = true;
+        }
+
+        if (check1 == 1 && check == 1) {
+            friends = true;
+        }
+
+        return ok(userprofile.render(session().get("email"), user, ufriended, hfriended, friends));
     }
 
+    /**
+     * Show Groupprofile
+     * @param gruppenname
+     * @return
+     */
     @Security.Authenticated(Secured.class)
     public static Result showGroup(String gruppenname) {
         Groups group = Groups.findByGruppenname(gruppenname);
@@ -62,7 +96,7 @@ public class Network extends Controller {
         }
 
         if(Groupmembers.find.where().eq("user_id", session().get("userid")).eq("group_id", group.getId()).findRowCount() == 0) {
-            return badRequest(groupprofile.render(session().get("email"), group, false, gmemberss));
+            return ok(groupprofile.render(session().get("email"), group, false, gmemberss));
         }
 
 
@@ -70,10 +104,15 @@ public class Network extends Controller {
         if (member.getMember() == Long.parseLong(session().get("userid")) && member.getGroup() == group.getId()) {
             return ok(groupprofile.render(session().get("email"), group, true, gmemberss));
         }
-        return badRequest(groupprofile.render(session().get("email"), group, false, gmemberss));
+        return ok(groupprofile.render(session().get("email"), group, false, gmemberss));
 
     }
 
+    /**
+     * Leave Group and delete if last member
+     * @param name
+     * @return
+     */
     @Security.Authenticated(Secured.class)
     public static Result leaveGroup(String name) {
 
@@ -88,6 +127,11 @@ public class Network extends Controller {
         return redirect(routes.Network.showGroup(name));
     }
 
+    /**
+     * Join group
+     * @param name
+     * @return
+     */
     @Security.Authenticated(Secured.class)
     public static Result enterGroup(String name){
 

@@ -99,6 +99,12 @@ public class Usersettings extends Controller {
         return redirect(routes.Usersettings.index());
     }
 
+    /**
+     * Change user password
+     * @param changes
+     * @param user
+     * @return
+     */
     @Security.Authenticated(Secured.class)
     @Transactional
     public static Result changePassword(DynamicForm changes, Users user) {

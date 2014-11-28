@@ -1,4 +1,4 @@
-@(email: String)(user: Users)
+@(email: String)(user: Users)(ufriended : Boolean)(hfriended: Boolean)(friends: Boolean)
 
 @userid = {@session.get("userid")}
 
@@ -22,9 +22,9 @@
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="/userprofile/@userid">Dein Profil</a></li>
                         <li class="divider"></li>
-                        <li><a href="#">Deine Freunde</a></li>
+                        <li><a href="/friendship">Deine Freunde</a></li>
                         <li class="divider"></li>
-                        <li><a href="#">Deine Gruppen</a></li>
+                        <li><a href="/group">Deine Gruppen</a></li>
                         <li><a href="/groups">Gruppe erstellen</a></li>
                     </ul>
                 </li>
@@ -77,6 +77,20 @@
             <tr>
                 <td><b>Beschreibung</b></td>
                 <td>@user.getBeschreibung()</td>
+            </tr>
+            <tr>
+                <td><b>Freunde</b></td>
+                @if(friends == true) {
+                    <td>Beidseitige Freundschaft.</td>
+                }
+                @if(hfriended == true) {
+                    <td>Mit dir befreundet</td>
+                }
+                @if(ufriended == true) {
+                    <td>Mit ihm befreundet</td>
+                } else {
+                    <td>Keine Freundschaft</td>
+                }
             </tr>
         </table>
     </div>

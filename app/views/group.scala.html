@@ -1,4 +1,4 @@
-@(email: String)(users: Integer)(groups: Integer)(online: Integer)(owngroups: Integer)
+@(email: String)(groups: List[Groups])
 
 @userid = {@session.get("userid")}
 
@@ -17,16 +17,16 @@
         </div>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="network">Home</a></li>
+                <li><a href="network">Home</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Du<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="/userprofile/@userid">Dein Profil</a></li>
                         <li class="divider"></li>
-                        <li><a href="friendship">Deine Freunde</a></li>
+                        <li><a href="/friendship">Deine Freunde</a></li>
                         <li class="divider"></li>
-                        <li><a href="group">Deine Gruppen</a></li>
-                        <li><a href="groups">Gruppe erstellen</a></li>
+                        <li><a href="/group">Deine Gruppen</a></li>
+                        <li><a href="/groups">Gruppe erstellen</a></li>
                     </ul>
                 </li>
                 <li><a href="search">Suchen</a></li>
@@ -48,26 +48,19 @@
 <div class="container">
 
     <div class="starter-template">
-        <h1>Statistiken</h1>
-        <br>
-        <br>
-        <table class="table table-hover" style="text-align: left;">
+        <table class="table table-hover">
+            <thead>
+            <th>#</th>
+            <th>Gruppenname</th>
+            </thead>
+            <tbody>
+            @for((result, index) <- groups.zipWithIndex) {
             <tr>
-                <td><b>Registrierte Benutzer</b></td>
-                <td>@users</td>
+                <td>@{index + 1}</td>
+                <td><a href="/groupprofile/@result.getGruppenname()">@result.getGruppenname()</a></td>
             </tr>
-            <tr>
-                <td><b>Derzeit angemeldete Benutzer</b></td>
-                <td>@online</td>
-            </tr>
-            <tr>
-                <td><b>Registrierte Gruppen</b></td>
-                <td>@groups</td>
-            </tr>
-            <tr>
-                <td><b>Beigetretene Gruppen</b></td>
-                <td>@owngroups</td>
-            </tr>
+            }
+            </tbody>
         </table>
     </div>
 

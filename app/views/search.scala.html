@@ -1,4 +1,4 @@
-@(email: String)(order: String)(results: List[Users])(groups: List[Groups])(error: Boolean)(message: String)
+@(email: String)(order: String)(results: List[Users])(groups: List[Groups])(friends: List[Boolean])(error: Boolean)(message: String)
 
 @userid = {@session.get("userid")}
 
@@ -23,9 +23,9 @@
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="/userprofile/@userid">Dein Profil</a></li>
                         <li class="divider"></li>
-                        <li><a href="#">Deine Freunde</a></li>
+                        <li><a href="friendship">Deine Freunde</a></li>
                         <li class="divider"></li>
-                        <li><a href="#">Deine Gruppen</a></li>
+                        <li><a href="group">Deine Gruppen</a></li>
                         <li><a href="groups">Gruppe erstellen</a></li>
                     </ul>
                 </li>
@@ -112,6 +112,7 @@
                         <th>Nachname</th>
                         <th>E-Mail Adresse</th>
                         <th>Befreundet</th>
+                        <th>Profilseite</th>
                     </thead>
                     <tbody>
                         @for((result, index) <- results.zipWithIndex) {
@@ -120,7 +121,12 @@
                             <td>@result.getVorname()</td>
                             <td>@result.getNachname()</td>
                             <td>@result.getEmail()</td>
-                            <td></td>
+                            @if(friends(index) == true) {
+                                <td><a href="unfriend/@result.getId()">Freundschaft beenden</a></td>
+                            } else {
+                                <td><a href="newfriend/@result.getId()">Freundschaft hinzufügen</a></td>
+                            }
+                            <td><a href="/userprofile/@result.getId()">Klick</a></td>
                         </tr>
                         }
                     </tbody>
@@ -138,6 +144,7 @@
                     <th>Vorname</th>
                     <th>E-Mail Adresse</th>
                     <th>Befreundet</th>
+                    <th>Profilseite</th>
                 </thead>
                 <tbody>
                     @for((result, index) <- results.zipWithIndex) {
@@ -146,7 +153,12 @@
                         <td>@result.getNachname()</td>
                         <td>@result.getVorname()</td>
                         <td>@result.getEmail()</td>
-                        <td></td>
+                        @if(friends(index) == true) {
+                            <td><a href="unfriend/@result.getId()">Freundschaft beenden</a></td>
+                        } else {
+                            <td><a href="newfriend/@result.getId()">Freundschaft hinzufügen</a></td>
+                        }
+                        <td><a href="/userprofile/@result.getId()">Klick</a></td>
                     </tr>
                     }
                 </tbody>
@@ -164,6 +176,7 @@
                     <th>Nachname</th>
                     <th>Vorname</th>
                     <th>Befreundet</th>
+                    <th>Profilseite</th>
                 </thead>
                 <tbody>
                     @for((result, index) <- results.zipWithIndex) {
@@ -172,7 +185,12 @@
                         <td>@result.getEmail()</td>
                         <td>@result.getNachname()</td>
                         <td>@result.getVorname()</td>
-                        <td></td>
+                        @if(friends(index) == true) {
+                            <td><a href="unfriend/@result.getId()">Freundschaft beenden</a></td>
+                        } else {
+                            <td><a href="newfriend/@result.getId()">Freundschaft hinzufügen</a></td>
+                        }
+                        <td><a href="/userprofile/@result.getId()">Klick</a></td>
                     </tr>
                     }
                 </tbody>

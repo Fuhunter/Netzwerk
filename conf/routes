@@ -37,12 +37,13 @@ GET     /groupprofile/:gruppenname  controllers.Network.showGroup(gruppenname: S
 GET     /groupsite/:gruppenname     controllers.Network.leaveGroup(gruppenname: String)
 GET     /groupenter/:gruppenname    controllers.Network.enterGroup(gruppenname: String)
 
-GET     /friends                    controllers.Friends.index()
-POST    /friends                    controllers.Friends.update()
-
 GET     /friendship                 controllers.Freundschaft.index()
-POST    /friendship                 controllers.Freundschaft.update()
-POST    /friendship                 controllers.Freundschaft.unfriend()
+
+GET     /newfriend/:id              controllers.Freundschaft.update(id: Long)
+
+GET     /unfriend/:id               controllers.Freundschaft.unfriend(id: Long)
+
+GET     /group                      controllers.Group.showGroups()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

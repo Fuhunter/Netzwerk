@@ -14,6 +14,7 @@ import play.db.ebean.Transactional;
 import play.mvc.*;
 import views.html.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,10 +27,14 @@ public class Group extends Controller {
      */
     @Security.Authenticated(Secured.class)
     public static Result index() {
-        return ok(groups.render(session().get("email"), false, ""));
+        return ok(views.html.groups.render(session().get("email"), false, ""));
     }
 
 
+    /**
+     * Create Group
+     * @return
+     */
     @Security.Authenticated(Secured.class)
     @Transactional
     public static Result register() {
@@ -68,5 +73,22 @@ public class Group extends Controller {
         return ok(groups.render(session().get("email"), false, "Success"));
     }
 
+    /**
+     * show my groups
+     * @return
+     */
+    @Security.Authenticated(Secured.class)
+    public static Result showGroups() {
+        List<Groupmembers> memberof = new ArrayList<>();
+        List<Groups> groups = new ArrayList<>();
+
+        memberof = Groupmembers.find.where().eq("user_id", session().get("userid")).findList();
+
+        for (Groupmembers m : memberof) {
+            groups.add(Groups.findById(m.getGroup()));
+        }
+
+        return ok(group.render(session().get("email"), groups));
+    }
 
 }
