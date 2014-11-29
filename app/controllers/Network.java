@@ -84,11 +84,11 @@ public class Network extends Controller {
     public static Result showGroup(String gruppenname) {
         Groups group = Groups.findByGruppenname(gruppenname);
         List<Groupmembers> gmembers = Groupmembers.find.where().eq("group_id", group.getId()).findList();
-        List<Users> gmemberss = new ArrayList<Users>();
+        List<Users> gmemberss = new ArrayList<>();
 
         if (gmembers.size() != 0) {
             for (Groupmembers user : gmembers) {
-                Users member = Users.findById(user.getId());
+                Users member = Users.findById(user.getMember());
                 if (member != null) {
                     gmemberss.add(member);
                 }
