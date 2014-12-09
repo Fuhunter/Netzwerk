@@ -1,0 +1,82 @@
+@(email: String)(ufriended: List[Users])(hfriended: List[Users])(friended: List[Users])(error: Boolean)(message: String)
+
+@userid = {@session.get("userid")}
+
+@main("Netzwerk") {
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Endorado</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="network">Home</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Du<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="/userprofile/@userid">Dein Profil</a></li>
+                        <li class="divider"></li>
+                        <li><a href="friendship">Deine Freunde</a></li>
+                        <li class="divider"></li>
+                        <li><a href="group">Deine Gruppen</a></li>
+                        <li><a href="groups">Gruppe erstellen</a></li>
+                    </ul>
+                </li>
+                <li><a href="/search">Suchen</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Eingeloggt als: @email<span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="statistics">Statistiken</a></li>
+                        <li class="divider"></li>
+                        <li><a href="settings">Einstellungen</a></li>
+                        <li class="divider"></li>
+                        <li><a href="logout">Abmelden</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="starter-template">
+        <h1>Meine Freundschaften</h1>
+        <br>
+        <table class="table table-hover" style="text-align: left;">
+            <tr>
+                <td><b>Ich bin befreundet mit:</b></td>
+                <td>
+                    @for(f <- ufriended) {
+                        <br>@f.getVorname() @f.getNachname()
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td><b>Sind befreundet mit mir:</b></td>
+                <td>
+                    @for(f <- hfriended) {
+                        <br>@f.getVorname() @f.getNachname()
+                    }
+                </td>
+            </tr>
+            <tr>
+                <td><b>Gegenseitig befreundet:</b></td>
+                <td>
+                    @for(f <- friended) {
+                        <br>@f.getVorname() @f.getNachname()
+                    }
+                </td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+}
