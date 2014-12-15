@@ -6,7 +6,9 @@
 
 package controllers;
 
+import javafx.geometry.Pos;
 import play.*;
+import play.data.DynamicForm;
 import play.mvc.*;
 import views.html.*;
 
@@ -23,7 +25,7 @@ public class Network extends Controller {
      */
     @Security.Authenticated(Secured.class)
     public static Result index() {
-        return ok(network.render(session().get("email")));
+        return ok(network.render(session().get("email"), false, ""));
     }
 
     /**
@@ -141,5 +143,24 @@ public class Network extends Controller {
         newMember.setGroup(group.getId());
         newMember.save();
         return redirect(routes.Network.showGroup(name));
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Result post(){
+
+        DynamicForm newPostForm = new DynamicForm().bindFromRequest();
+        String post = newPostForm.get("post");
+        try {
+            Post newPost = new Post();
+            newPost.setPoster(Long.parseLong(session().get("userid")));
+            newPost.setText(post);
+        }
+        catch (Exception e) {
+            Logger.error("Error", e);
+            return badRequest(network.render(session().get("email"), true, "Datenbank Fehler"));
+        }
+
+        return redirect(routes.Network.index());
+
     }
 }
