@@ -10,6 +10,7 @@ import controllers.Network;
 import play.db.ebean.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 public class Post extends Model {
@@ -21,6 +22,8 @@ public class Post extends Model {
 
     protected String post_text;
 
+    protected Date timestamp;
+
     public Long getId() {
         return this.post_id;
     }
@@ -28,6 +31,8 @@ public class Post extends Model {
     public Long getPoster() { return this.poster_id;}
 
     public String getPost() { return this.post_text;}
+
+    public Date getTimestamp() {return this.timestamp;}
 
     public void setId(Long ID) {
         this.post_id = ID;
@@ -38,6 +43,8 @@ public class Post extends Model {
     public void setText(String Text) {
         this.post_text = Text;
     }
+
+    public void setTimestamp(Date Time) {this.timestamp = Time;}
 
     public static Finder<Long, Post> find = new Finder<Long, Post>(
             Long.class, Post.class
