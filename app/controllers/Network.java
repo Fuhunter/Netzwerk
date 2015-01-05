@@ -6,9 +6,7 @@
 
 package controllers;
 
-import javafx.geometry.Pos;
 import play.*;
-import play.data.DynamicForm;
 import play.mvc.*;
 import views.html.*;
 
@@ -16,7 +14,6 @@ import models.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Date;
 
 public class Network extends Controller {
 
@@ -26,31 +23,7 @@ public class Network extends Controller {
      */
     @Security.Authenticated(Secured.class)
     public static Result index() {
-        List<Friendship> ufriended = new ArrayList<>();
-        List<Users> uufriended = new ArrayList<>();
-
-        ufriended = Friendship.find.where().eq("user_id", session().get("userid")).findList();
-
-        for (Friendship f : ufriended) {
-            uufriended.add(Users.findById(f.getFriendid()));
-        }
-
-        List<List<Post>> postshelp = new ArrayList<>();
-        for (Users u : uufriended) {
-
-            List<Post> helplist = Post.find.where().eq("poster_id", u.getId()).findList();
-            postshelp.add(helplist);
-        }
-
-        List<Post> posts = new ArrayList<>();
-        for(List<Post> p : postshelp){
-            for(Post i : p){
-                posts.add(i);
-            }
-        }
-
-
-        return ok(network.render(session().get("email"), false, "", posts));
+        return ok(network.render(session().get("email")));
     }
 
     /**
@@ -168,29 +141,5 @@ public class Network extends Controller {
         newMember.setGroup(group.getId());
         newMember.save();
         return redirect(routes.Network.showGroup(name));
-    }
-
-    @Security.Authenticated(Secured.class)
-    public static Result post(){
-
-        DynamicForm newPostForm = new DynamicForm().bindFromRequest();
-        String post = newPostForm.get("post");
-        Logger.debug("test1");
-        Date date = new Date();
-        try {
-            Post newPost = new Post();
-            Logger.debug("test2");
-            newPost.setPoster(Long.parseLong(session().get("userid")));
-            newPost.setText(post);
-            newPost.setTimestamp(date);
-            newPost.save();
-        }
-        catch (Exception e) {
-            Logger.error("Error", e);
-            return badRequest(network.render(session().get("email"), true, "Datenbank Fehler",null));
-        }
-
-        return redirect(routes.Network.index());
-
     }
 }
