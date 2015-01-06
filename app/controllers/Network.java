@@ -171,7 +171,7 @@ public class Network extends Controller {
     }
 
     @Security.Authenticated(Secured.class)
-    public static Result post(){
+    public static Result posts(){
 
         DynamicForm newPostForm = new DynamicForm().bindFromRequest();
         String post = newPostForm.get("post");

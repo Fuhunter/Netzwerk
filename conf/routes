@@ -19,6 +19,7 @@ GET     /login                      controllers.Signup.loginPage()
 
 GET     /network                    controllers.Network.index()
 GET     /logout                     controllers.Signup.logout()
+POST    /network                    controllers.Network.posts()
 
 GET     /groups                     controllers.Group.index()
 POST    /groups                     controllers.Group.register()
@@ -44,8 +45,6 @@ GET     /newfriend/:id              controllers.Freundschaft.update(id: Long)
 GET     /unfriend/:id               controllers.Freundschaft.unfriend(id: Long)
 
 GET     /group                      controllers.Group.showGroups()
-
-POST    /network                    controllers.Network.post()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
