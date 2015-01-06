@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class Messages extends Model {
+public class Message extends Model {
 
     @Id
     protected Long id;

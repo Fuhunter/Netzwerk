@@ -23,7 +23,7 @@ public class Network extends Controller {
      */
     @Security.Authenticated(Secured.class)
     public static Result index() {
-        return ok(network.render(session().get("email")));
+        return ok(network.render(session().get("email"), null, null, null));
     }
 
     /**
@@ -141,5 +141,10 @@ public class Network extends Controller {
         newMember.setGroup(group.getId());
         newMember.save();
         return redirect(routes.Network.showGroup(name));
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Result posts() {
+        return ok();
     }
 }

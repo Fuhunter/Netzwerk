@@ -6,11 +6,12 @@
 
 package controllers;
 
-import play.*;
-import play.data.DynamicForm;
-import play.db.ebean.Transactional;
 import play.mvc.*;
 import views.html.*;
+import models.Message;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Messages extends Controller {
 
@@ -21,6 +22,12 @@ public class Messages extends Controller {
      */
     @Security.Authenticated(Secured.class)
     public static Result index() {
-        return ok();
+
+        List<Message> messages = new ArrayList<>();
+        List<String> betreff = new ArrayList<>();
+
+        //messages = Message.find.where().eq("eid", session().get("userid")).findList();
+
+        return ok(message.render(session().get("email")));
     }
 }
