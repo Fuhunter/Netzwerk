@@ -1,7 +1,7 @@
 /**
  * @author Thomas Dennhardt, Christoph Gaudl and Niclas Günther
  *
- * Friendship Model: ID, Friend#1 (befriender), Friend#2 (befriended), status, date
+ * Message Model
  */
 
 package models;
@@ -11,7 +11,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class Messages extends Model {
+public class Message extends Model {
 
     @Id
     protected Long id;
@@ -24,7 +24,7 @@ public class Messages extends Model {
 
     protected String nachricht;
 
-    protected Date date;
+    protected Date datum;
 
     public Long getId() {
         return this.id;
@@ -66,7 +66,15 @@ public class Messages extends Model {
         this.nachricht = nachricht;
     }
 
-    public static Finder<Long, Friendship> find = new Finder<Long, Friendship>(
-            Long.class, Friendship.class
+    public void setDatum(Date datum) {
+        this.datum = datum;
+    }
+
+    public Date getDatum() {
+        return this.datum;
+    }
+
+    public static Finder<Long, Message> find = new Finder<Long, Message>(
+            Long.class, Message.class
     );
 }

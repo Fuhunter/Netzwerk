@@ -1,4 +1,4 @@
-@(email: String)(error: Boolean)(message: String)(posts: List[Post])
+@(email: String)(error: Boolean)(message: String)
 
 @userid = {@session.get("userid")}
 
@@ -17,7 +17,7 @@
         </div>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="network">Home</a></li>
+                <li><a href="network">Home</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Du<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
@@ -50,22 +50,38 @@
 <div class="container">
 
     <div class="starter-template">
-        <h1>Willkommen zurück!</h1>
+        <h1>Neue Nachricht</h1>
         <br>
         <br>
-        <form role="form" class="form-horizontal" action="@routes.Network.posts()" method="POST">
+        <form role="form" class="form-horizontal" action="@routes.Messages.create()" method="POST">
             <div class="form-group">
-                <label for="post" class="col-sm-2 control-label">Status:</label>
+                <label for="empfaenger" class="col-sm-2 control-label">An:</label>
                 <div class="col-sm-10">
                     <div class="col-xs-4">
-                        <textarea type="text" class="form-control" rows="3" id="post" name="post" placeholder="Erz&auml;hl was du gerade machst:"></textarea>
+                        <input type="text" class="form-control" name="empfaenger" id="empfaenger" placeholder="Empfänger">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="betreff" class="col-sm-2 control-label">Betreff:</label>
+                <div class="col-sm-10">
+                    <div class="col-xs-4">
+                        <input type="text" class="form-control" name="betreff" id="betreff" placeholder="Betreff">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="nachricht" class="col-sm-2 control-label">An:</label>
+                <div class="col-sm-10">
+                    <div class="col-xs-4">
+                        <textarea class="form-control" name="nachricht" id="nachricht" placeholder="Deine Nachricht" rows="15"></textarea>
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <div class="col-xs-4">
-                        <button type="submit" class="btn btn-default">Post</button>
+                        <button type="submit" class="btn btn-default">Abschicken</button>
                         @if(error == true) {
                         <span class="text-warning">@message</span>
                         } else {
@@ -75,7 +91,6 @@
                 </div>
             </div>
         </form>
-
     </div>
 </div>
 }

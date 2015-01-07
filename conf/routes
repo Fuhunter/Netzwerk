@@ -46,5 +46,30 @@ GET     /unfriend/:id               controllers.Freundschaft.unfriend(id: Long)
 
 GET     /group                      controllers.Group.showGroups()
 
+POST    /network                    controllers.Network.posts()
+
+GET     /messages                   controllers.Messages.index()
+
+GET     /nmessage                   controllers.Messages.newm()
+POST    /nmessage                   controllers.Messages.create()
+
+GET     /showm/:id                  controllers.Messages.show(id: Long)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
+#<!--<table class="table table-hover">
+#            <thead>
+#            <th>#</th>
+#            <th>Poster</th>
+#            <th>Post</th>
+#            </thead>
+#            <tbody>
+#            @for((result, index) <- posts.zipWithIndex) {
+#            <tr>
+#                <td>@{index + 1}</td>
+#                <td>@result.getPoster()</td>
+#                <td>@result.getPost()</td>
+#            </tr>
+#            }
+#            </tbody>
+#        </table>-->
