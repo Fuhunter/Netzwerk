@@ -80,6 +80,14 @@ public class Freundschaft extends Controller {
             newFriendship.setFriendid(id);
             newFriendship.setTimestamp(date);
             newFriendship.save();
+
+            Message fm = new Message();
+            fm.setBetreff("Neue Freundschaft von" + session().get("email"));
+            fm.setDatum(new Date());
+            fm.setEid(id);
+            fm.setAid((long) 0);
+            fm.setNachricht(session().get("email") + " hat dich als Freund hinzugefügt.");
+            fm.save();
         } catch (Exception e) {
             Logger.error("Error", e);
             return badRequest(friendship.render(session().get("email"), null, null, null, true, "Datenbankfehler"));
@@ -104,6 +112,14 @@ public class Freundschaft extends Controller {
         Friendship friend = Friendship.find.where().eq("friend_id", id).eq("user_id", session().get("userid")).findUnique();
 
         friend.delete();
+
+        Message fm = new Message();
+        fm.setBetreff(session().get("email") + " hat die Freundschaft beendet");
+        fm.setDatum(new Date());
+        fm.setEid(id);
+        fm.setAid((long) 0);
+        fm.setNachricht(session().get("email") + " hat die Freundschaft beendet.");
+        fm.save();
 
         return redirect(routes.Freundschaft.index());
     }
