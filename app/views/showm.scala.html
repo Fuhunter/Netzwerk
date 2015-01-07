@@ -1,4 +1,4 @@
-@(email: String)(vornamen: List[String])(nachnamen: List[String])(betreff: List[String])(ids: List[Long])
+@(email: String)(message: Message)
 
 @userid = {@session.get("userid")}
 
@@ -17,29 +17,29 @@
         </div>
         <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li><a href="network">Home</a></li>
+                <li class="active"><a href="network">Home</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Du<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="/userprofile/@userid">Dein Profil</a></li>
-                        <li><a href="messages">Nachrichten</a></li>
-                        <li><a href="nmessage">Neue Nachricht verfassen</a></li>
+                        <li><a href="/messages">Nachrichten</a></li>
+                        <li><a href="/nmessage">Neue Nachricht verfassen</a></li>
                         <li class="divider"></li>
-                        <li><a href="friendship">Deine Freunde</a></li>
+                        <li><a href="/friendship">Deine Freunde</a></li>
                         <li class="divider"></li>
-                        <li><a href="group">Deine Gruppen</a></li>
-                        <li><a href="groups">Gruppe erstellen</a></li>
+                        <li><a href="/group">Deine Gruppen</a></li>
+                        <li><a href="/groups">Gruppe erstellen</a></li>
                     </ul>
                 </li>
                 <li><a href="search">Suchen</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Eingeloggt als: @email<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                        <li><a href="statistics">Statistiken</a></li>
+                        <li><a href="/statistics">Statistiken</a></li>
                         <li class="divider"></li>
-                        <li><a href="settings">Einstellungen</a></li>
+                        <li><a href="/settings">Einstellungen</a></li>
                         <li class="divider"></li>
-                        <li><a href="logout">Abmelden</a></li>
+                        <li><a href="/logout">Abmelden</a></li>
                     </ul>
                 </li>
             </ul>
@@ -50,29 +50,24 @@
 <div class="container">
 
     <div class="starter-template">
-        <h1>Nachrichten</h1>
+        <h1> Nachricht</h1>
         <br>
         <br>
         <table class="table table-hover">
             <thead>
-                <th>#</th>
-                <th>Vorname</th>
-                <th>Nachname</th>
+                <th>Absender</th>
+                <th>Datum</th>
                 <th>Betreff</th>
-                <th>Anzeigen</th>
+                <th>Nachricht</th>
             </thead>
             <tbody>
-                @for((result, index) <- vornamen.zipWithIndex) {
-                <tr>
-                    <td>@{index + 1}</td>
-                    <td>@result</td>
-                    <td>@nachnamen(index)</td>
-                    <td>@betreff(index)</td>
-                    <td><a href="/showm/@ids(index)">Klick</a></td>
-                </tr>
-                }
+                <td>@message.getAid()</td>
+                <td>@message.getDatum()</td>
+                <td>@message.getBetreff()</td>
+                <td>@message.getNachricht()</td>
             </tbody>
         </table>
     </div>
+
 </div>
 }
