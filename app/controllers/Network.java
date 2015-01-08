@@ -6,7 +6,10 @@
 
 package controllers;
 
+import javafx.geometry.Pos;
 import play.*;
+import play.data.DynamicForm;
+import play.db.ebean.Transactional;
 import play.mvc.*;
 import views.html.*;
 
@@ -14,6 +17,7 @@ import models.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 public class Network extends Controller {
 
@@ -23,7 +27,31 @@ public class Network extends Controller {
      */
     @Security.Authenticated(Secured.class)
     public static Result index() {
-        return ok(network.render(session().get("email"), null, null, null));
+        List<Friendship> ufriended = new ArrayList<>();
+        List<Users> uufriended = new ArrayList<>();
+
+        ufriended = Friendship.find.where().eq("user_id", session().get("userid")).findList();
+
+        for (Friendship f : ufriended) {
+            uufriended.add(Users.findById(f.getFriendid()));
+        }
+
+        List<List<Post>> postshelp = new ArrayList<>();
+        for (Users u : uufriended) {
+
+            List<Post> helplist = Post.find.where().eq("poster_id", u.getId()).findList();
+            postshelp.add(helplist);
+        }
+
+        List<Post> posts = new ArrayList<>();
+        for(List<Post> p : postshelp){
+            for(Post i : p){
+                posts.add(i);
+            }
+        }
+
+
+        return ok(network.render(session().get("email"), false, "", posts));
     }
 
     /**
@@ -143,8 +171,49 @@ public class Network extends Controller {
         return redirect(routes.Network.showGroup(name));
     }
 
+    /**
+     * Creates a post
+     * @return
+     */
     @Security.Authenticated(Secured.class)
-    public static Result posts() {
-        return ok();
+    @Transactional
+    public static Result posts(){
+
+        DynamicForm newPostForm = new DynamicForm().bindFromRequest();
+        String post = newPostForm.get("post");
+        Date date = new Date();
+        try {
+            Post newPost = new Post();
+            Users help_User = Users.findById(Long.parseLong(session().get("userid")));
+            newPost.setPoster(Long.parseLong(session().get("userid")));
+            newPost.setPoster_name(help_User.getVorname() + "" + help_User.getNachname());
+            newPost.setText(post);
+            newPost.setTimestamp(date);
+            newPost.save();
+        }
+        catch (Exception e) {
+            Logger.error("Error", e);
+            return badRequest(network.render(session().get("email"), true, "Datenbank Fehler",null));
+        }
+
+        return redirect(routes.Network.index());
+
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Result showpost(Long id){
+        Post helppost = Post.findById(id);
+
+        return ok(post.render(session().get("email"), false, "", helppost));
+    }
+
+    @Security.Authenticated(Secured.class)
+    @Transactional
+    public static Result repost(Long id){
+        Post helppost = Post.findById(id);
+        DynamicForm newPostForm = new DynamicForm().bindFromRequest();
+        String post = newPostForm.get("post");
+        helppost.setText(post);
+        return redirect(routes.Network.index());
     }
 }
