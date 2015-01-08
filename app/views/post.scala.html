@@ -49,15 +49,27 @@
 
 <div class="container">
     <div class="starter-template">
-            <label for="post" class="col-sm-2 control-label">Post:</label>
+        <form role="form" class="form-horizontal" action="@routes.Network.repost(post.getId())" method="POST">
+            <label for="npost" class="col-sm-2 control-label">Post:</label>
             <div class="col-sm-10">
                 <div class="col-xs-4">
-                    <textarea type="text" class="form-control" rows="3" id="post" name="post">@post.getPost()</textarea>
+                    <textarea type="text" class="form-control" rows="3" id="npost" name="npost">@post.getPost()</textarea>
                 </div>
             </div>
             <div class="form-group">
-                <a href="/postupdate/@post.getId()">Update</a>
+                <div class="col-sm-offset-2 col-sm-10">
+                    <div class="col-xs-4">
+                        <button type="submit" class="btn btn-default">Updaten</button>
+                        @if(error == true) {
+                        <span class="text-warning">@message</span>
+                        } else {
+                        <span class="text-success">@message</span>
+                        }
+                    </div>
+                </div>
             </div>
+        </form>
+        <a href = "/postdel/@post.getId()">Löschen</a>
     </div>
 </div>
 }

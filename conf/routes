@@ -47,7 +47,8 @@ GET     /group                      controllers.Group.showGroups()
 
 POST    /network                    controllers.Network.posts()
 GET     /post/:id                   controllers.Network.showpost(id: Long)
-GET     /postupdate/:id             controllers.Network.repost(id: Long)
+POST    /postupdate/:id             controllers.Network.repost(id: Long)
+GET     /postdel/:id                controllers.Network.delpost(id: Long)
 
 GET     /messages                   controllers.Messages.index()
 

@@ -188,7 +188,7 @@ public class Network extends Controller {
             Post newPost = new Post();
             Users help_User = Users.findById(Long.parseLong(session().get("userid")));
             newPost.setPoster(Long.parseLong(session().get("userid")));
-            newPost.setPoster_name(help_User.getVorname() + "" + help_User.getNachname());
+            newPost.setPoster_name(help_User.getVorname() + " " + help_User.getNachname());
             newPost.setText(post);
             newPost.setTimestamp(date);
             newPost.save();
@@ -214,9 +214,17 @@ public class Network extends Controller {
     public static Result repost(Long id){
         Post helppost = Post.findById(id);
         DynamicForm newPostForm = new DynamicForm().bindFromRequest();
-        String post = newPostForm.get("post");
+        String post = newPostForm.get("npost");
+        Logger.debug("test " + post);
         helppost.setText(post);
         helppost.save();
+        return redirect(routes.Network.index());
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Result delpost(Long id){
+        Post helppost = Post.findById(id);
+        helppost.delete();
         return redirect(routes.Network.index());
     }
 }
