@@ -216,6 +216,7 @@ public class Network extends Controller {
         DynamicForm newPostForm = new DynamicForm().bindFromRequest();
         String post = newPostForm.get("post");
         helppost.setText(post);
+        helppost.save();
         return redirect(routes.Network.index());
     }
 }
