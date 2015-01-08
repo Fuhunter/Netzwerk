@@ -101,4 +101,15 @@ public class Messages extends Controller {
         Message message = Message.find.byId(id);
         return ok(showm.render(session().get("email"), message));
     }
+
+    @Security.Authenticated(Secured.class)
+    public static Result del(Long id) {
+        Message message = Message.find.byId(id);
+
+        if (message != null) {
+            message.delete();
+        }
+
+        return redirect(routes.Messages.index());
+    }
 }

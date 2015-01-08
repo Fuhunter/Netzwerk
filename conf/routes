@@ -54,6 +54,8 @@ POST    /nmessage                   controllers.Messages.create()
 
 GET     /showm/:id                  controllers.Messages.show(id: Long)
 
+GET     /mdel/:id                   controllers.Messages.del(id: Long)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 #<!--<table class="table table-hover">

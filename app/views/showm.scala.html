@@ -50,7 +50,7 @@
 <div class="container">
 
     <div class="starter-template">
-        <h1> Nachricht</h1>
+        <h1>Nachricht</h1>
         <br>
         <br>
         <table class="table table-hover">
@@ -59,12 +59,14 @@
                 <th>Datum</th>
                 <th>Betreff</th>
                 <th>Nachricht</th>
+                <th>Löschen?</th>
             </thead>
             <tbody>
                 <td>@message.getAid()</td>
                 <td>@message.getDatum()</td>
                 <td>@message.getBetreff()</td>
                 <td>@message.getNachricht()</td>
+                <td><a href="/mdel/@message.getId()">Klick</a></td>
             </tbody>
         </table>
     </div>
