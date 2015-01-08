@@ -82,7 +82,7 @@ public class Freundschaft extends Controller {
             newFriendship.save();
 
             Message fm = new Message();
-            fm.setBetreff("Neue Freundschaft von" + session().get("email"));
+            fm.setBetreff("Neue Freundschaft von " + session().get("email"));
             fm.setDatum(new Date());
             fm.setEid(id);
             fm.setAid((long) 0);
