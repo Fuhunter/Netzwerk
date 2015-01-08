@@ -43,6 +43,8 @@ public class Network extends Controller {
             postshelp.add(helplist);
         }
 
+        List<Post> myposts = Post.find.where().eq("poster_id", session().get("userid")).findList();
+        postshelp.add(myposts);
         List<Post> posts = new ArrayList<>();
         for(List<Post> p : postshelp){
             for(Post i : p){
