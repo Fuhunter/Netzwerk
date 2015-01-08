@@ -9,6 +9,7 @@ package controllers;
 import javafx.geometry.Pos;
 import play.*;
 import play.data.DynamicForm;
+import play.db.ebean.Transactional;
 import play.mvc.*;
 import views.html.*;
 
@@ -170,17 +171,22 @@ public class Network extends Controller {
         return redirect(routes.Network.showGroup(name));
     }
 
+    /**
+     * Creates a post
+     * @return
+     */
     @Security.Authenticated(Secured.class)
-    public static Result post(){
+    @Transactional
+    public static Result posts(){
 
         DynamicForm newPostForm = new DynamicForm().bindFromRequest();
         String post = newPostForm.get("post");
-        Logger.debug("test1");
         Date date = new Date();
         try {
             Post newPost = new Post();
-            Logger.debug("test2");
+            Users help_User = Users.findById(Long.parseLong(session().get("userid")));
             newPost.setPoster(Long.parseLong(session().get("userid")));
+            newPost.setPoster_name(help_User.getVorname() + "" + help_User.getNachname());
             newPost.setText(post);
             newPost.setTimestamp(date);
             newPost.save();
@@ -192,5 +198,22 @@ public class Network extends Controller {
 
         return redirect(routes.Network.index());
 
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Result showpost(Long id){
+        Post helppost = Post.findById(id);
+
+        return ok(post.render(session().get("email"), false, "", helppost));
+    }
+
+    @Security.Authenticated(Secured.class)
+    @Transactional
+    public static Result repost(Long id){
+        Post helppost = Post.findById(id);
+        DynamicForm newPostForm = new DynamicForm().bindFromRequest();
+        String post = newPostForm.get("post");
+        helppost.setText(post);
+        return redirect(routes.Network.index());
     }
 }

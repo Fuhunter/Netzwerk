@@ -20,6 +20,8 @@ public class Post extends Model {
 
     protected Long poster_id;
 
+    protected String poster_name;
+
     protected String post_text;
 
     protected Date timestamp;
@@ -32,6 +34,8 @@ public class Post extends Model {
 
     public String getPost() { return this.post_text;}
 
+    public String getPoster_name() { return this.poster_name;}
+
     public Date getTimestamp() {return this.timestamp;}
 
     public void setId(Long ID) {
@@ -42,6 +46,10 @@ public class Post extends Model {
 
     public void setText(String Text) {
         this.post_text = Text;
+    }
+
+    public void setPoster_name(String Text) {
+        this.poster_name = Text;
     }
 
     public void setTimestamp(Date Time) {this.timestamp = Time;}

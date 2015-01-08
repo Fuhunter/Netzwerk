@@ -19,7 +19,6 @@ GET     /login                      controllers.Signup.loginPage()
 
 GET     /network                    controllers.Network.index()
 GET     /logout                     controllers.Signup.logout()
-POST    /network                    controllers.Network.posts()
 
 GET     /groups                     controllers.Group.index()
 POST    /groups                     controllers.Group.register()
@@ -47,6 +46,8 @@ GET     /unfriend/:id               controllers.Freundschaft.unfriend(id: Long)
 GET     /group                      controllers.Group.showGroups()
 
 POST    /network                    controllers.Network.posts()
+GET     /post/:id                   controllers.Network.showpost(id: Long)
+GET     /postupdate/:id             controllers.Network.repost(id: Long)
 
 GET     /messages                   controllers.Messages.index()
 
