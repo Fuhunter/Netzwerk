@@ -26,6 +26,8 @@ public class Post extends Model {
 
     protected Date timestamp;
 
+    protected Long public_post;
+
     public Long getId() {
         return this.post_id;
     }
@@ -37,6 +39,8 @@ public class Post extends Model {
     public String getPoster_name() { return this.poster_name;}
 
     public Date getTimestamp() {return this.timestamp;}
+
+    public Long getPublic_post() {return this.public_post;}
 
     public void setId(Long ID) {
         this.post_id = ID;
@@ -53,6 +57,8 @@ public class Post extends Model {
     }
 
     public void setTimestamp(Date Time) {this.timestamp = Time;}
+
+    public void setPublic_post(Long public_post){this.public_post = public_post;}
 
     public static Finder<Long, Post> find = new Finder<Long, Post>(
             Long.class, Post.class

@@ -27,24 +27,43 @@ public class Network extends Controller {
      */
     @Security.Authenticated(Secured.class)
     public static Result index() {
+
         List<Friendship> ufriended = new ArrayList<>();
+        List<Friendship> hfriended = new ArrayList<>();
+        List<Friendship> friends = new ArrayList<>();
         List<Users> uufriended = new ArrayList<>();
+        List<Users> friended = new ArrayList<>();
 
         ufriended = Friendship.find.where().eq("user_id", session().get("userid")).findList();
 
         for (Friendship f : ufriended) {
+            for (Friendship h: hfriended) {
+                if (h.getFriendid() == f.getUserid()) {
+                    friends.add(f);
+                }
+            }
+
             uufriended.add(Users.findById(f.getFriendid()));
         }
 
-        List<List<Post>> postshelp = new ArrayList<>();
-        for (Users u : uufriended) {
+        for (Friendship f : friends) {
+            friended.add(Users.findById(f.getFriendid()));
+        }
 
-            List<Post> helplist = Post.find.where().eq("poster_id", u.getId()).findList();
-            postshelp.add(helplist);
+        List<List<Post>> postshelp = new ArrayList<>();
+
+        for (Users u : friended) {
+        List<Post> helplist = Post.find.where().eq("poster_id", u.getId()).findList();
+        postshelp.add(helplist);
         }
 
         List<Post> myposts = Post.find.where().eq("poster_id", session().get("userid")).findList();
         postshelp.add(myposts);
+        for (Users u : uufriended){
+           List<Post> helplist = Post.find.where().eq("poster_id",u.getId()).eq("public_post",(long) 1).findList();
+           postshelp.add(helplist);
+        }
+
         List<Post> posts = new ArrayList<>();
         for(List<Post> p : postshelp){
             for(Post i : p){
@@ -184,6 +203,7 @@ public class Network extends Controller {
         DynamicForm newPostForm = new DynamicForm().bindFromRequest();
         String post = newPostForm.get("post");
         Date date = new Date();
+        Boolean public_post = Boolean.valueOf(newPostForm.get("public"));
         try {
             Post newPost = new Post();
             Users help_User = Users.findById(Long.parseLong(session().get("userid")));
@@ -191,6 +211,11 @@ public class Network extends Controller {
             newPost.setPoster_name(help_User.getVorname() + " " + help_User.getNachname());
             newPost.setText(post);
             newPost.setTimestamp(date);
+            if (public_post){
+                newPost.setPublic_post((long) 0);
+            }else {
+                newPost.setPublic_post((long) 1);
+            }
             newPost.save();
         }
         catch (Exception e) {
