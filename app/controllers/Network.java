@@ -57,10 +57,10 @@ public class Network extends Controller {
         postshelp.add(helplist);
         }
 
-        List<Post> myposts = Post.find.where().eq("poster_id", session().get("userid")).findList();
+        List<Post> myposts = Post.find.where().eq("poster_id", session().get("userid")).orderBy("timestamp").findList();
         postshelp.add(myposts);
         for (Users u : uufriended){
-           List<Post> helplist = Post.find.where().eq("poster_id",u.getId()).eq("public_post",(long) 1).findList();
+           List<Post> helplist = Post.find.where().eq("poster_id",u.getId()).eq("public_post",(long) 1).orderBy("timestamp").findList();
            postshelp.add(helplist);
         }
 
@@ -70,6 +70,7 @@ public class Network extends Controller {
                 posts.add(i);
             }
         }
+
 
 
         return ok(network.render(session().get("email"), false, "", posts));
@@ -99,7 +100,7 @@ public class Network extends Controller {
         Users user = Users.findById(id);
 
         if (user == null) {
-            return badRequest(userprofile.render(session().get("email"), null, null, null, null));
+            return badRequest(userprofile.render(session().get("email"), null, null, null, null,null));
         }
 
         Integer check = Friendship.find.where().eq("friend_id", id).eq("user_id", session().get("userid")).findRowCount();
@@ -121,7 +122,22 @@ public class Network extends Controller {
             friends = true;
         }
 
-        return ok(userprofile.render(session().get("email"), user, ufriended, hfriended, friends));
+        List<List<Post>> helpposts = new ArrayList<>();
+        if (friends || Long.parseLong(session().get("userid")) == user.getId()){
+            List<Post> help = Post.find.where().eq("poster_id", id).eq("public_post", 0).findList();
+            helpposts.add(help);
+        }
+
+        List<Post> help = Post.find.where().eq("poster_id", id).eq("public_post", 1).findList();
+        helpposts.add(help);
+        List<Post> posts = new ArrayList<>();
+        for(List<Post> p : helpposts){
+            for(Post i : p){
+                posts.add(i);
+            }
+        }
+
+        return ok(userprofile.render(session().get("email"), user, ufriended, hfriended, friends, posts));
     }
 
     /**
@@ -203,7 +219,8 @@ public class Network extends Controller {
         DynamicForm newPostForm = new DynamicForm().bindFromRequest();
         String post = newPostForm.get("post");
         Date date = new Date();
-        Boolean public_post = Boolean.valueOf(newPostForm.get("public"));
+        String publicpost = newPostForm.get("public");
+        Logger.debug(publicpost);
         try {
             Post newPost = new Post();
             Users help_User = Users.findById(Long.parseLong(session().get("userid")));
@@ -211,7 +228,7 @@ public class Network extends Controller {
             newPost.setPoster_name(help_User.getVorname() + " " + help_User.getNachname());
             newPost.setText(post);
             newPost.setTimestamp(date);
-            if (public_post){
+            if (publicpost == null){
                 newPost.setPublic_post((long) 0);
             }else {
                 newPost.setPublic_post((long) 1);

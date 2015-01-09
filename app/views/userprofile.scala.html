@@ -1,4 +1,4 @@
-@(email: String)(user: Users)(ufriended : Boolean)(hfriended: Boolean)(friends: Boolean)
+@(email: String)(user: Users)(ufriended : Boolean)(hfriended: Boolean)(friends: Boolean)(posts: List[Post])
 
 @userid = {@session.get("userid")}
 
@@ -91,6 +91,45 @@
                 } else {
                     <td>Keine Freundschaft</td>
                 }
+            </tr>
+            <tr>
+                <table class="table table-hover">
+                    <thead>
+                    <th>#</th>
+                    <th>Poster</th>
+                    <th>Post</th>
+                    <th>Bearbeiten</th>
+                    </thead>
+                    <tbody>
+                    @for((result, index) <- posts.zipWithIndex) {
+                    @if(result.getPoster() == session.get("userid").toLong){
+                    <tr>
+                        <td>@{index + 1}</td>
+                        <td>@result.getPoster_name()</td>
+                        <td>@result.getPost()</td>
+                        <td><a href = "/post/@result.getId()">Bearbeiten</a></td>
+                        @if(result.getPublic_post() == 1){
+                        <td>öffentlicher Post</td>
+                        }else{
+                        <td>nicht öffentlich</td>
+                        }
+                    </tr>
+                    }else{
+                    <tr>
+                        <td>@{index + 1}</td>
+                        <td><a href="/userprofile/@result.getPoster()">@result.getPoster_name()</a></td>
+                        <td>@result.getPost()</td>
+                        <td>nicht dein Post</td>
+                        @if(result.getPublic_post() == 1){
+                        <td>öffentlicher Post</td>
+                        }else{
+                        <td>nicht öffentlich</td>
+                        }
+                    </tr>
+                    }
+                    }
+                    </tbody>
+                </table>
             </tr>
         </table>
     </div>
