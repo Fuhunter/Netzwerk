@@ -8,6 +8,7 @@ package controllers;
 
 import javafx.geometry.Pos;
 import play.*;
+import play.api.libs.Collections;
 import play.data.DynamicForm;
 import play.db.ebean.Transactional;
 import play.mvc.*;
@@ -53,7 +54,7 @@ public class Network extends Controller {
         List<List<Post>> postshelp = new ArrayList<>();
 
         for (Users u : friended) {
-        List<Post> helplist = Post.find.where().eq("poster_id", u.getId()).findList();
+        List<Post> helplist = Post.find.where().eq("poster_id", u.getId()).orderBy("timestamp").findList();
         postshelp.add(helplist);
         }
 
@@ -71,6 +72,7 @@ public class Network extends Controller {
             }
         }
 
+        java.util.Collections.reverse(posts);
 
 
         return ok(network.render(session().get("email"), false, "", posts));
@@ -124,11 +126,11 @@ public class Network extends Controller {
 
         List<List<Post>> helpposts = new ArrayList<>();
         if (friends || Long.parseLong(session().get("userid")) == user.getId()){
-            List<Post> help = Post.find.where().eq("poster_id", id).eq("public_post", 0).findList();
+            List<Post> help = Post.find.where().eq("poster_id", id).eq("public_post", 0).orderBy("timestamp").findList();
             helpposts.add(help);
         }
 
-        List<Post> help = Post.find.where().eq("poster_id", id).eq("public_post", 1).findList();
+        List<Post> help = Post.find.where().eq("poster_id", id).eq("public_post", 1).orderBy("timestamp").findList();
         helpposts.add(help);
         List<Post> posts = new ArrayList<>();
         for(List<Post> p : helpposts){
@@ -136,6 +138,8 @@ public class Network extends Controller {
                 posts.add(i);
             }
         }
+
+        java.util.Collections.reverse(posts);
 
         return ok(userprofile.render(session().get("email"), user, ufriended, hfriended, friends, posts));
     }
