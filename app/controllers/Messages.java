@@ -52,6 +52,64 @@ public class Messages extends Controller {
     }
 
     /**
+     * If authenticated render Indexpage
+     *
+     * @return
+     */
+    @Security.Authenticated(Secured.class)
+    public static Result abs() {
+
+        List<String> absenderV = new ArrayList<>();
+        List<String> absenderN = new ArrayList<>();
+        List<String> betreff = new ArrayList<>();
+        List<Long> ids = new ArrayList<>();
+        List<Boolean> readed = new ArrayList<>();
+        List<Date> datum = new ArrayList<>();
+
+        for (Message ab: Message.find.select("aid").select("betreff").select("id").select("readed").select("datum").where().eq("eid", session().get("userid")).orderBy("aid").findList()) {
+            String abs = Users.findById(ab.getAid()).getVorname();
+            String abs2 = Users.findById(ab.getAid()).getNachname();
+            absenderV.add(abs);
+            absenderN.add(abs2);
+            betreff.add(ab.getBetreff());
+            ids.add(ab.getId());
+            readed.add(ab.getReaded());
+            datum.add(ab.getDatum());
+        }
+
+        return ok(message.render(session().get("email"), absenderV, absenderN, betreff, ids, readed, datum));
+    }
+
+    /**
+     * If authenticated render Indexpage
+     *
+     * @return
+     */
+    @Security.Authenticated(Secured.class)
+    public static Result betr() {
+
+        List<String> absenderV = new ArrayList<>();
+        List<String> absenderN = new ArrayList<>();
+        List<String> betreff = new ArrayList<>();
+        List<Long> ids = new ArrayList<>();
+        List<Boolean> readed = new ArrayList<>();
+        List<Date> datum = new ArrayList<>();
+
+        for (Message ab: Message.find.select("aid").select("betreff").select("id").select("readed").select("datum").where().eq("eid", session().get("userid")).orderBy("betreff").findList()) {
+            String abs = Users.findById(ab.getAid()).getVorname();
+            String abs2 = Users.findById(ab.getAid()).getNachname();
+            absenderV.add(abs);
+            absenderN.add(abs2);
+            betreff.add(ab.getBetreff());
+            ids.add(ab.getId());
+            readed.add(ab.getReaded());
+            datum.add(ab.getDatum());
+        }
+
+        return ok(message.render(session().get("email"), absenderV, absenderN, betreff, ids, readed, datum));
+    }
+
+    /**
      * Show page for new message
      * @return
      */
