@@ -45,11 +45,19 @@ public class Messages extends Controller {
         return ok(message.render(session().get("email"), absenderV, absenderN, betreff, ids));
     }
 
+    /**
+     * Show page for new message
+     * @return
+     */
     @Security.Authenticated(Secured.class)
     public static Result newm() {
         return ok(nmessage.render(session().get("email"), false, ""));
     }
 
+    /**
+     * Create new Message
+     * @return
+     */
     public static Result create() {
         DynamicForm nm = new DynamicForm().bindFromRequest();
 
@@ -57,6 +65,7 @@ public class Messages extends Controller {
         String betreff = nm.get("betreff");
         String nachricht = nm.get("nachricht");
 
+        // Check for multiple
         if (empfaenger.contains(",")) {
             String[] mempfaenger = empfaenger.split(",");
 
@@ -96,12 +105,22 @@ public class Messages extends Controller {
         return redirect(routes.Messages.newm());
     }
 
+    /**
+     * Show message
+     * @param id
+     * @return
+     */
     @Security.Authenticated(Secured.class)
     public static Result show(Long id) {
         Message message = Message.find.byId(id);
         return ok(showm.render(session().get("email"), message));
     }
 
+    /**
+     * delete message
+     * @param id
+     * @return
+     */
     @Security.Authenticated(Secured.class)
     public static Result del(Long id) {
         Message message = Message.find.byId(id);
