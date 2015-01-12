@@ -6,6 +6,8 @@
 
 package controllers;
 
+import models.Friendship;
+import models.Groupmembers;
 import models.Users;
 import org.joda.time.DateTime;
 import play.Logger;
@@ -32,17 +34,21 @@ public class Messages extends Controller {
         List<String> absenderN = new ArrayList<>();
         List<String> betreff = new ArrayList<>();
         List<Long> ids = new ArrayList<>();
+        List<Boolean> readed = new ArrayList<>();
+        List<Date> datum = new ArrayList<>();
 
-        for (Message ab: Message.find.select("aid").select("betreff").select("id").where().eq("eid", session().get("userid")).findList()) {
+        for (Message ab: Message.find.select("aid").select("betreff").select("id").select("readed").select("datum").where().eq("eid", session().get("userid")).orderBy("datum").findList()) {
             String abs = Users.findById(ab.getAid()).getVorname();
             String abs2 = Users.findById(ab.getAid()).getNachname();
             absenderV.add(abs);
             absenderN.add(abs2);
             betreff.add(ab.getBetreff());
             ids.add(ab.getId());
+            readed.add(ab.getReaded());
+            datum.add(ab.getDatum());
         }
 
-        return ok(message.render(session().get("email"), absenderV, absenderN, betreff, ids));
+        return ok(message.render(session().get("email"), absenderV, absenderN, betreff, ids, readed, datum));
     }
 
     /**
@@ -75,12 +81,32 @@ public class Messages extends Controller {
                 nn.setNachricht(nachricht);
                 nn.setAid(Long.parseLong(session().get("userid")));
                 nn.setDatum(new Date());
+                nn.setReaded(false);
 
                 Long em = Users.findByEmail(empf).getId();
 
                 if (em != null && !em.equals("")) {
-                    nn.setEid(em);
-                    nn.save();
+                    Friendship ufriends = Friendship.find.where().eq("user_id", session().get("userid")).eq("friend_id", em).findUnique();
+                    List<Groupmembers> groups = Groupmembers.find.where().eq("user_id", session().get("userid")).findList();
+                    List<Groupmembers> groupsem = Groupmembers.find.where().eq("user_id", em).findList();
+                    List<Long> groupids = new ArrayList<>();
+                    List<Long> groupemids = new ArrayList<>();
+
+                    for (Groupmembers g: groups) {
+                        groupids.add(g.getGroup());
+                    }
+
+                    for (Groupmembers g: groupsem) {
+                        groupemids.add(g.getGroup());
+                    }
+
+                    if (ufriends != null || groupids.contains(groupemids)) {
+                        nn.setEid(em);
+                        nn.save();
+                    } else {
+                        Logger.error("Keine Freunde!");
+                        return redirect(routes.Messages.index());
+                    }
                 } else {
                     Logger.error("Empfänger ", empf, "nicht gefunden");
                 }
@@ -91,12 +117,29 @@ public class Messages extends Controller {
             nn.setNachricht(nachricht);
             nn.setAid(Long.parseLong(session().get("userid")));
             nn.setDatum(new Date());
+            nn.setReaded(false);
 
             Long em = Users.findByEmail(empfaenger).getId();
 
             if (em != null && !em.equals("")) {
-                nn.setEid(em);
-                nn.save();
+                Friendship ufriends = Friendship.find.where().eq("user_id", session().get("userid")).eq("friend_id", em).findUnique();
+                List<Groupmembers> groups = Groupmembers.find.where().eq("user_id", session().get("userid")).findList();
+                List<Groupmembers> groupsem = Groupmembers.find.where().eq("user_id", em).findList();
+                List<Long> groupids = new ArrayList<>();
+                List<Long> groupemids = new ArrayList<>();
+
+                for (Groupmembers g: groups) {
+                    groupids.add(g.getGroup());
+                }
+
+                for (Groupmembers g: groupsem) {
+                    groupemids.add(g.getGroup());
+                }
+
+                if (ufriends != null || groupids.contains(groupemids)) {
+                    nn.setEid(em);
+                    nn.save();
+                }
             } else {
                 Logger.error("Empfänger ", empfaenger, "nicht gefunden");
             }
@@ -113,6 +156,11 @@ public class Messages extends Controller {
     @Security.Authenticated(Secured.class)
     public static Result show(Long id) {
         Message message = Message.find.byId(id);
+
+        if (message.getReaded() == false) {
+            message.setReaded(true);
+            message.save();
+        }
         return ok(showm.render(session().get("email"), message));
     }
 
