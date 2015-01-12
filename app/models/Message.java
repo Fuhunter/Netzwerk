@@ -26,6 +26,8 @@ public class Message extends Model {
 
     protected Date datum;
 
+    protected Boolean readed;
+
     public Long getId() {
         return this.id;
     }
@@ -72,6 +74,14 @@ public class Message extends Model {
 
     public Date getDatum() {
         return this.datum;
+    }
+
+    public void setReaded(Boolean readed) {
+        this.readed = readed;
+    }
+
+    public Boolean getReaded() {
+        return this.readed;
     }
 
     public static Finder<Long, Message> find = new Finder<Long, Message>(

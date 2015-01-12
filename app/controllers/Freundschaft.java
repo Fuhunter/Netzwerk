@@ -87,12 +87,14 @@ public class Freundschaft extends Controller {
             fm.setEid(id);
             fm.setAid((long) 0);
             fm.setNachricht(session().get("email") + " hat dich als Freund hinzugefügt.");
+            fm.setReaded(false);
             fm.save();
         } catch (Exception e) {
             Logger.error("Error", e);
             return badRequest(friendship.render(session().get("email"), null, null, null, true, "Datenbankfehler"));
         }
 
+        Logger.debug("bka");
         return redirect(routes.Freundschaft.index());
     }
 
@@ -119,6 +121,7 @@ public class Freundschaft extends Controller {
         fm.setEid(id);
         fm.setAid((long) 0);
         fm.setNachricht(session().get("email") + " hat die Freundschaft beendet.");
+        fm.setReaded(false);
         fm.save();
 
         return redirect(routes.Freundschaft.index());

@@ -1,4 +1,4 @@
-@(email: String)(vornamen: List[String])(nachnamen: List[String])(betreff: List[String])(ids: List[Long])
+@(email: String)(vornamen: List[String])(nachnamen: List[String])(betreff: List[String])(ids: List[Long])(readed: List[Boolean])(datum: List[Date])
 
 @userid = {@session.get("userid")}
 
@@ -59,6 +59,8 @@
                 <th>Vorname</th>
                 <th>Nachname</th>
                 <th>Betreff</th>
+                <th>Datum</th>
+                <th>Gelesen?</th>
                 <th>Anzeigen</th>
             </thead>
             <tbody>
@@ -68,6 +70,12 @@
                     <td>@result</td>
                     <td>@nachnamen(index)</td>
                     <td>@betreff(index)</td>
+                    <td>@datum(index)</td>
+                    @if(readed(index) == true) {
+                        <td>Gelesen</td>
+                    } else {
+                        <td>Ungelesen</td>
+                    }
                     <td><a href="/showm/@ids(index)">Klick</a></td>
                 </tr>
                 }
