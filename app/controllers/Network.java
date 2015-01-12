@@ -244,6 +244,11 @@ public class Network extends Controller {
 
     }
 
+    /**
+     * Show Post
+     * @param id
+     * @return
+     */
     @Security.Authenticated(Secured.class)
     public static Result showpost(Long id){
         Post helppost = Post.findById(id);
@@ -251,6 +256,11 @@ public class Network extends Controller {
         return ok(post.render(session().get("email"), false, "", helppost));
     }
 
+    /**
+     * Edit your Post
+     * @param id
+     * @return
+     */
     @Security.Authenticated(Secured.class)
     @Transactional
     public static Result repost(Long id){
@@ -263,6 +273,11 @@ public class Network extends Controller {
         return redirect(routes.Network.index());
     }
 
+    /**
+     * Delete your Post
+     * @param id
+     * @return
+     */
     @Security.Authenticated(Secured.class)
     public static Result delpost(Long id){
         Post helppost = Post.findById(id);
