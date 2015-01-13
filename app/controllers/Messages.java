@@ -149,6 +149,7 @@ public class Messages extends Controller {
                     List<Groupmembers> groupsem = Groupmembers.find.where().eq("user_id", em).findList();
                     List<Long> groupids = new ArrayList<>();
                     List<Long> groupemids = new ArrayList<>();
+                    Boolean ggroup = false;
 
                     for (Groupmembers g: groups) {
                         groupids.add(g.getGroup());
@@ -158,7 +159,16 @@ public class Messages extends Controller {
                         groupemids.add(g.getGroup());
                     }
 
-                    if (ufriends != null || groupids.contains(groupemids)) {
+                    for (Long id : groupids) {
+                        for (Long i : groupemids) {
+                            if (id == i) {
+                                ggroup = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (ufriends != null || ggroup == true) {
                         nn.setEid(em);
                         nn.save();
                     } else {
@@ -185,6 +195,7 @@ public class Messages extends Controller {
                 List<Groupmembers> groupsem = Groupmembers.find.where().eq("user_id", em).findList();
                 List<Long> groupids = new ArrayList<>();
                 List<Long> groupemids = new ArrayList<>();
+                Boolean ggroup = false;
 
                 for (Groupmembers g: groups) {
                     groupids.add(g.getGroup());
@@ -194,7 +205,16 @@ public class Messages extends Controller {
                     groupemids.add(g.getGroup());
                 }
 
-                if (ufriends != null || groupids.contains(groupemids)) {
+                for (Long id : groupids) {
+                    for (Long i : groupemids) {
+                        if (id == i) {
+                            ggroup = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (ufriends != null || ggroup == true) {
                     nn.setEid(em);
                     nn.save();
                 }

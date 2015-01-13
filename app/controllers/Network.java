@@ -36,6 +36,7 @@ public class Network extends Controller {
         List<Users> friended = new ArrayList<>();
 
         ufriended = Friendship.find.where().eq("user_id", session().get("userid")).findList();
+        hfriended = Friendship.find.where().eq("friend_id", session().get("userid")).findList();
 
         for (Friendship f : ufriended) {
             for (Friendship h: hfriended) {
@@ -54,15 +55,20 @@ public class Network extends Controller {
         List<List<Post>> postshelp = new ArrayList<>();
 
         for (Users u : friended) {
-        List<Post> helplist = Post.find.where().eq("poster_id", u.getId()).orderBy("timestamp").findList();
-        postshelp.add(helplist);
+            List<Post> helplist = Post.find.where().eq("poster_id", u.getId()).orderBy("timestamp").findList();
+            postshelp.add(helplist);
         }
 
         List<Post> myposts = Post.find.where().eq("poster_id", session().get("userid")).orderBy("timestamp").findList();
         postshelp.add(myposts);
         for (Users u : uufriended){
-           List<Post> helplist = Post.find.where().eq("poster_id",u.getId()).eq("public_post",(long) 1).orderBy("timestamp").findList();
-           postshelp.add(helplist);
+            List<Post> helplist = Post.find.where().eq("poster_id",u.getId()).eq("public_post",(long) 1).orderBy("timestamp").findList();
+
+            for (Post p : helplist) {
+                if (postshelp.contains(p)) {
+                    postshelp.add(helplist);
+                }
+            }
         }
 
         List<Post> posts = new ArrayList<>();

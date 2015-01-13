@@ -49,7 +49,7 @@ public class Search extends Controller {
                 List<Boolean> friends = new ArrayList<>();
 
                 for (Users user : result) {
-                    Friendship check = Friendship.find.where().eq("friend_id", user.getId()).findUnique();
+                    Friendship check = Friendship.find.where().eq("user_id", session().get("userid")).eq("friend_id", user.getId()).findUnique();
 
                     if (check != null) {
                         friends.add(true);
@@ -66,7 +66,7 @@ public class Search extends Controller {
                 List<Boolean> friends = new ArrayList<>();
 
                 for (Users user : result) {
-                    Friendship check = Friendship.find.where().eq("friend_id", user.getId()).findUnique();
+                    Friendship check = Friendship.find.where().eq("user_id", session().get("userid")).eq("friend_id", user.getId()).findUnique();
 
                     if (check != null) {
                         friends.add(true);
@@ -83,7 +83,7 @@ public class Search extends Controller {
                 List<Boolean> friends = new ArrayList<>();
 
                 for (Users user : result) {
-                    Friendship check = Friendship.find.where().eq("friend_id", user.getId()).findUnique();
+                    Friendship check = Friendship.find.where().eq("user_id", session().get("userid")).eq("friend_id", user.getId()).findUnique();
 
                     if (check != null) {
                         friends.add(true);
