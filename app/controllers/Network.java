@@ -260,7 +260,7 @@ public class Network extends Controller {
      * @return
      */
     @Security.Authenticated(Secured.class)
-    public static Result showpost(Long id){
+    public static Result showpost(Long id) {
         Post helppost = Post.findById(id);
 
         return ok(post.render(session().get("email"), false, "", helppost));
@@ -273,7 +273,7 @@ public class Network extends Controller {
      */
     @Security.Authenticated(Secured.class)
     @Transactional
-    public static Result repost(Long id){
+    public static Result repost(Long id) {
         Post helppost = Post.findById(id);
         DynamicForm newPostForm = new DynamicForm().bindFromRequest();
         String post = newPostForm.get("npost");
@@ -289,9 +289,76 @@ public class Network extends Controller {
      * @return
      */
     @Security.Authenticated(Secured.class)
-    public static Result delpost(Long id){
+    public static Result delpost(Long id) {
         Post helppost = Post.findById(id);
         helppost.delete();
         return redirect(routes.Network.index());
+    }
+
+    /**
+     * Show friends with network analysis
+     * @param id
+     * @return
+     */
+    @Security.Authenticated(Secured.class)
+    public static Result netfriends(Long id) {
+        List<Friendship> friend = new ArrayList<>();
+        List<Friendship> myfriends = new ArrayList<>();
+        List<Groupmembers> mygroups = new ArrayList<>();
+        List<Friendship> gfriends = new ArrayList<>();
+        List<Users> nonfriends = new ArrayList<>();
+        List<Users> nongfriends = new ArrayList<>();
+        List<Users> suggestions = new ArrayList<>();
+
+        friend = Friendship.find.where().eq("friend_id", session().get("userid")).findList();
+        myfriends = Friendship.find.where().eq("user_id", session().get("userid")).findList();
+        mygroups = Groupmembers.find.where().eq("user_id", session().get("userid")).findList();
+
+        if (!myfriends.isEmpty()) {
+            for (Friendship f : friend) {
+                if (myfriends.contains(f)) {
+                    friend.remove(f);
+                }
+            }
+        }
+
+        if (!friend.isEmpty()) {
+            for (Friendship f: friend) {
+                Users u = Users.findById(f.getUserid());
+
+                if (u != null) {
+                    nonfriends.add(u);
+                }
+            }
+        }
+
+        for (Groupmembers g: mygroups) {
+            List<Groupmembers> gm = new ArrayList<>();
+
+            gm = Groupmembers.find.where().eq("group_id", g.getGroup()).not(com.avaje.ebean.Expr.eq("user_id", session().get("userid"))).findList();
+
+            for (Groupmembers gf: gm) {
+                Friendship f = Friendship.find.where().eq("user_id", gf.getMember()).eq("friend_id", session().get("userid")).findUnique();
+
+                if (f != null) {
+                    gfriends.add(f);
+                }
+            }
+        }
+
+        if (!gfriends.isEmpty()) {
+            for (Friendship gf: gfriends) {
+                Users u = Users.findById(gf.getUserid());
+
+                if (u != null) {
+                    nongfriends.add(u);
+                }
+            }
+        }
+
+        suggestions.addAll(nonfriends);
+        suggestions.addAll(nongfriends);
+
+        return ok(netfriends.render(session().get("email"), suggestions));
     }
 }
