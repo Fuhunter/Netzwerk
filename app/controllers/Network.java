@@ -372,4 +372,74 @@ public class Network extends Controller {
 
         return ok(netfriends.render(session().get("email"), suggestions));
     }
+
+    /**
+     * Get Friends with content analysis
+     * @param id
+     * @return
+     */
+    @Security.Authenticated(Secured.class)
+    public static Result contentFriends(Long id)
+    {
+        List<Friendship> friend = new ArrayList<>();
+        List<Friendship> myfriends = new ArrayList<>();
+        List<Friendship> bfriends = new ArrayList<>();
+        List<Users> allUsers = new ArrayList<>();
+        List<Post> myPosts = new ArrayList<>();
+        List<Post> userPosts = new ArrayList<>();
+        List<String[]> myWords = new ArrayList<>();
+        List<String[]> userWords = new ArrayList<>();
+        String[][] matrix;
+        List<Users> suggestions = new ArrayList<>();
+
+        String regexSpecialChars = "[^\\w\\s]";
+
+        allUsers = Users.find.all();
+
+        myPosts = Post.find.where().eq("poster_id", session().get("userid")).findList();
+        userPosts = Post.find.where().not(com.avaje.ebean.Expr.eq("poster_id", session().get("userid"))).findList();
+
+        friend = Friendship.find.where().eq("friend_id", session().get("userid")).findList();
+        myfriends = Friendship.find.where().eq("user_id", session().get("userid")).findList();
+
+        if (!myfriends.isEmpty()) {
+            for (Friendship f : friend) {
+                if (myfriends.contains(f)) {
+                    friend.remove(f);
+                    myfriends.remove(f);
+                    bfriends.add(f);
+                }
+            }
+        }
+
+        if (!userPosts.isEmpty()) {
+            for (Post p : userPosts) {
+                for (Friendship f : bfriends) {
+                    if (p.getPoster() == f.getUserid()) {
+                        userPosts.remove(p);
+                    }
+                }
+
+                for (Friendship f : myfriends) {
+                    if (p.getPoster() == f.getFriendid()) {
+                        userPosts.remove(p);
+                    }
+                }
+
+                String help = p.getPost().replaceAll(regexSpecialChars, "");
+                userWords.add(help.split("\\s"));
+            }
+        }
+
+        if (!myPosts.isEmpty()) {
+            for (Post p: myPosts) {
+                String help = p.getPost().replaceAll(regexSpecialChars, "");
+                myWords.add(help.split("\\s"));
+            }
+        }
+
+
+
+        return ok(confriends.render(session().get("email"), suggestions));
+    }
 }

@@ -66,5 +66,7 @@ GET     /abs                        controllers.Messages.abs()
 
 GET     /netfriends/:id             controllers.Network.netfriends(id: Long)
 
+GET     /confriends/:id             controllers.Network.contentFriends(id: Long)
+
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
