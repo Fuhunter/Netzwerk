@@ -24,6 +24,8 @@
                         <li><a href="/userprofile/@userid">Dein Profil</a></li>
                         <li class="divider"></li>
                         <li><a href="/friendship">Deine Freunde</a></li>
+                        <li><a href="/netfriends/@userid">Netzwerkanalyse</a></li>
+                        <li><a href="/confriends/@userid">Inhaltsanalyse</a></li>
                         <li class="divider"></li>
                         <li><a href="/group">Deine Gruppen</a></li>
                         <li><a href="/groups">Gruppe erstellen</a></li>
@@ -51,13 +53,13 @@
         <h1>Vorschläge</h1>
         <br>
         <table class="table table-hover" style="text-align: left;">
-            <tr>
-                <td>
-                @for(f <- suggestions) {
-                    <br>@f.getVorname() @f.getNachname()
-                    }
-                </td>
-            </tr>
+            @for(f <- suggestions) {
+                <tr>
+                    <td>
+                        @f.getVorname() @f.getNachname()
+                    </td>
+                </tr>
+            }
         </table>
     </div>
 

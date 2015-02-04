@@ -17,6 +17,7 @@ import views.html.*;
 import models.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Date;
 
@@ -324,6 +325,8 @@ public class Network extends Controller {
             }
         }
 
+        Logger.info("a");
+
         /*for (Friendship f: myfriends) {
             Users u = Users.findById(f.getFriendid());
 
@@ -379,7 +382,7 @@ public class Network extends Controller {
      * @return
      */
     @Security.Authenticated(Secured.class)
-    public static Result contentFriends(Long id)
+    public static Result contentfriends(Long id)
     {
         List<Friendship> friend = new ArrayList<>();
         List<Friendship> myfriends = new ArrayList<>();
@@ -389,8 +392,10 @@ public class Network extends Controller {
         List<Post> userPosts = new ArrayList<>();
         List<String[]> myWords = new ArrayList<>();
         List<String[]> userWords = new ArrayList<>();
-        String[][] matrix;
+        //String[][] user_word_matrix = new String[][] {{}};
         List<Users> suggestions = new ArrayList<>();
+
+        Boolean checker = false;
 
         String regexSpecialChars = "[^\\w\\s]";
 
@@ -412,33 +417,52 @@ public class Network extends Controller {
             }
         }
 
-        if (!userPosts.isEmpty()) {
+        /*if (!userPosts.isEmpty()) {
             for (Post p : userPosts) {
+                checker = false;
                 for (Friendship f : bfriends) {
-                    if (p.getPoster() == f.getUserid()) {
+                    if (p.getPoster().equals(f.getUserid())) {
+                        checker = true;
                         userPosts.remove(p);
+                        break;
                     }
                 }
 
                 for (Friendship f : myfriends) {
-                    if (p.getPoster() == f.getFriendid()) {
+                    if (p.getPoster().equals(f.getFriendid())) {
+                        checker = true;
                         userPosts.remove(p);
+                        break;
                     }
                 }
 
-                String help = p.getPost().replaceAll(regexSpecialChars, "");
-                userWords.add(help.split("\\s"));
+                if (checker == false) {
+                    String help = p.getPost().replaceAll(regexSpecialChars, "");
+                    userWords.add(help.split("\\s"));
+                } else {
+                    continue;
+                }
             }
+
+            HashSet helpu = new HashSet(userWords);
+            userWords.clear();
+            userWords.addAll(helpu);
+            userWords.toArray();
         }
+
+
 
         if (!myPosts.isEmpty()) {
             for (Post p: myPosts) {
                 String help = p.getPost().replaceAll(regexSpecialChars, "");
                 myWords.add(help.split("\\s"));
             }
-        }
 
+            HashSet helpm = new HashSet(myWords);
+            myWords.clear();
+            myWords.addAll(helpm);
 
+        }*/
 
         return ok(confriends.render(session().get("email"), suggestions));
     }
