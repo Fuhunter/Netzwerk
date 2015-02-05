@@ -310,10 +310,11 @@ public class Network extends Controller {
         List<Users> nongfriends = new ArrayList<>();
         List<Users> suggestions = new ArrayList<>();
 
-        friend = Friendship.find.where().eq("friend_id", session().get("userid")).findList();
-        myfriends = Friendship.find.where().eq("user_id", session().get("userid")).findList();
-        mygroups = Groupmembers.find.where().eq("user_id", session().get("userid")).findList();
+        friend = Friendship.find.where().eq("friend_id", session().get("userid")).findList(); // friended with me
+        myfriends = Friendship.find.where().eq("user_id", session().get("userid")).findList(); // friended with them
+        mygroups = Groupmembers.find.where().eq("user_id", session().get("userid")).findList(); // mygroups
 
+        // Check for double sided friendship
         if (!myfriends.isEmpty()) {
             for (Friendship f : friend) {
                 for (Friendship ff : myfriends) {
@@ -325,6 +326,7 @@ public class Network extends Controller {
             }
         }
 
+        // Get Users
         if (!friend.isEmpty()) {
             for (Friendship f: friend) {
                 Users u = Users.findById(f.getUserid());
@@ -335,6 +337,7 @@ public class Network extends Controller {
             }
         }
 
+        // Get suggestions from users i share a group with
         for (Groupmembers g: mygroups) {
             List<Groupmembers> gm = new ArrayList<>();
 
@@ -359,6 +362,7 @@ public class Network extends Controller {
             }
         }
 
+        // Remove double entry
         if (!nonfriends.isEmpty() && !nongfriends.isEmpty()) {
             for (Users u : nonfriends) {
                 if (nongfriends.contains(u)) {
