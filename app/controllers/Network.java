@@ -521,7 +521,7 @@ public class Network extends Controller {
         Float cosine_amount_help1 = (float) 0.0;
         Float cosine_amount_help2 = (float) 0.0;
         Float cosine_amount_help3 = (float) 0.0;
-        double cosine_amount = (float) 0.0;
+        double cosine_amount = (double) 0.0;
 
         user = Users.find.all();
         Users huser = user.get(user.size() - 1);
@@ -533,7 +533,7 @@ public class Network extends Controller {
         for(List<Map<String, Float>> helplist : tf_idf_matrix){
             for (Map<String, Float> helpmap : helplist){
                 Set<String> helpset = helpmap.keySet();
-                for (int i = 1; i < counter2; i++){
+                for (int i = 1; i < counter2; i++){ // Diese Schleife wird nie aufgerufen! counter2 wird immer 0 sein, auf was soll das gesetzt werden?
                     for (String helpstring : helpset){
                         if (helplist.get(0).containsKey(helpstring)){
                             cosine_amount_help1 = (float) helplist.get(0).get(helpstring)* tf_idf_matrix.get(counter2).get(0).get(helpstring) + cosine_amount_help1;
