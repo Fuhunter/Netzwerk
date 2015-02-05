@@ -382,6 +382,7 @@ public class Network extends Controller {
         List<Users> user = new ArrayList<>();
         List<Post> posts = new ArrayList<>();
         List<List<Map<String, Integer>>> wordmatrix = new ArrayList<>();
+        String regexSpecialChars = "[^\\w\\s]";
 
         user = Users.find.all();
         Users huser = user.get(user.size() - 1);
@@ -396,8 +397,8 @@ public class Network extends Controller {
                 Map<String, Integer> words = new HashMap<String, Integer>();
                 List<Map<String, Integer>> lwords = new ArrayList<>();
                 for( Post p : posts){
-                    String helpstring = p.getPost();
-                    String[] singlewords = helpstring.split(" ");
+                    String help = p.getPost().replaceAll(regexSpecialChars, "");
+                    String[] singlewords = help.split(" ");
                     for(String s: singlewords){
                         s = s.toUpperCase();
                         if(words.containsKey(s)){
@@ -427,10 +428,10 @@ public class Network extends Controller {
         Map<String, Integer> wordmatrix = new HashMap<String, Integer>();
         Integer activeuser = 0;
         Integer userid = 0;
-        Double userwords = 0.0;
-        List<List<Double>> maxwords = new ArrayList<>();
+        Float userwords = (float) 0.0;
+        List<List<Float>> maxwords = new ArrayList<>();
         List<Users> user = new ArrayList<>();
-        List<List<Map<String, Double>>> tf_idf_result = new ArrayList<>();
+        List<List<Map<String, Float>>> tf_idf_result = new ArrayList<>();
 
         user = Users.find.all();
         Users huser = user.get(user.size() - 1);
@@ -463,16 +464,16 @@ public class Network extends Controller {
                 for(Map<String, Integer> words :lwords){
                     for (String s : keywords){
                         if(words.containsKey(s)){
-                            Double helpnumber = Double.parseDouble(String.valueOf(words.get(s)));
+                            Float helpnumber = Float.parseFloat(String.valueOf(words.get(s)));
                             if (helpnumber > userwords){
                                 userwords = helpnumber;
                             }
                         }
                     }
                 }
-                List<Double> helplist = new ArrayList<>();
+                List<Float> helplist = new ArrayList<>();
                 helplist.add(userwords);
-                userwords = 0.0;
+                userwords = (float) 0.0;
                 maxwords.set(userid, helplist);
             }
             userid = userid + 1;
@@ -481,15 +482,14 @@ public class Network extends Controller {
         userid = 0;
         for (List<Map<String, Integer>> lwords : userwordmatrix){
             if (!lwords.isEmpty()) {
-                Map<String, Double> helpmap = new HashMap<>();
+                Map<String, Float> helpmap = new HashMap<>();
                 for (Map<String, Integer> words : lwords) {
                     for (String s : keywords) {
                         s = s.toUpperCase();
                         if (words.containsKey(s)) {
-                            Double helpnumber = (helpmap.put(s,((words.get(s)/(maxwords.get(userid).get(0)))*(Math.log10(activeuser/wordmatrix.get(s))))));
-                            Logger.debug("Ergebnis" + helpnumber);
-                            List<Map<String, Double>> helplist = new ArrayList<>();
-                            helpmap.put(s,helpnumber);
+                            List<Map<String, Float>> helplist = new ArrayList<>();
+                            Float helpnumber = helpmap.put(s,helpmap.put(s, (float) ((words.get(s)/(maxwords.get(userid).get(0)))*(Math.log10(activeuser/wordmatrix.get(s))))));
+                            helpmap.put(s, helpnumber);
                             helplist.add(helpmap);
                             tf_idf_result.set(userid, helplist);
                         }
@@ -592,5 +592,76 @@ public class Network extends Controller {
         }*/
 
         return ok(confriends.render(session().get("email"), suggestions));
+    }
+
+
+    /**
+     * create vote
+     *
+     * @param
+     * @return
+     */
+    @Security.Authenticated(Secured.class)
+    @Transactional
+    public static Result createvote(Long id) {
+
+        Date date = new Date();
+        Long voted = ((long) 1);
+        try {
+            Vote newVote = new Vote();
+            Users help_Voter = Users.findById(Long.parseLong(session().get("userid")));
+            Post help_Poster = Post.findById(id);
+            Integer checksum = Vote.find.where().eq("post_id", id).eq("vote", 1).findRowCount();
+            checksum +=1;
+            Vote uniquevote = Vote.find.where().eq("post_id", id).eq("voter_id", session().get("userid")).findUnique();
+            if (uniquevote == null) {
+                newVote.setId(help_Poster.getId());
+                newVote.setVoter(Long.parseLong(session().get("userid")));
+                newVote.setPosterId(help_Poster.getPoster());
+                newVote.setVoter_name(help_Voter.getVorname() + " " + help_Voter.getNachname());
+                newVote.setTimestamp(date);
+                newVote.setVote(voted);
+                newVote.setVotesum((long) checksum);
+                newVote.save();
+
+                Post newHelpPost = Post.findById(id);
+                newHelpPost.setVote((long) checksum);
+                newHelpPost.save();
+            } else {
+                return badRequest(login.render(true, "DOPPELTES VOTE!"));
+            }
+
+        } catch (Exception e) {
+            Logger.error("Error", e);
+            return badRequest(network.render(session().get("email"), true, "Datenbankfehler", null));
+        }
+
+        return redirect(routes.Network.index());
+    }
+
+    /**
+     * delete vote
+     *
+     * @param
+     * @return
+     */
+    @Security.Authenticated(Secured.class)
+    @Transactional
+    public static Result delvote(Long id) {
+
+        try {
+            Vote helpvote = Vote.find.where().eq("post_id", id).eq("voter_id", session().get("userid")).findUnique();
+            if (helpvote == null) {
+                return badRequest(login.render(true, "NICHT DEIN VOTE!"));
+            } else {
+                helpvote.delete();
+            }
+
+        } catch (Exception e) {
+            Logger.error("Error", e);
+            return badRequest(network.render(session().get("email"), true, "Vote existiert nicht", null));
+        }
+        return redirect(routes.Network.index());
+
     }
 }
