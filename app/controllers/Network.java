@@ -8,6 +8,7 @@ package controllers;
 
 import javafx.geometry.Pos;
 import play.*;
+import play.Logger;
 import play.api.libs.Collections;
 import play.data.DynamicForm;
 import play.db.ebean.Transactional;
@@ -16,10 +17,8 @@ import views.html.*;
 
 import models.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Date;
+import java.util.*;
+import java.util.logging.*;
 
 public class Network extends Controller {
 
@@ -81,7 +80,7 @@ public class Network extends Controller {
 
         java.util.Collections.reverse(posts);
 
-
+        Logger.debug(String.valueOf(tf_idf()));
         return ok(network.render(session().get("email"), false, "", posts));
     }
 
@@ -374,6 +373,134 @@ public class Network extends Controller {
         //suggestions.addAll(nonffriends);
 
         return ok(netfriends.render(session().get("email"), suggestions));
+    }
+
+
+    @Security.Authenticated(Secured.class)
+    public static List<List<Map<String, Integer>>> creat_word_matrix()
+    {
+        List<Users> user = new ArrayList<>();
+        List<Post> posts = new ArrayList<>();
+        List<List<Map<String, Integer>>> wordmatrix = new ArrayList<>();
+
+        user = Users.find.all();
+        Users huser = user.get(user.size() - 1);
+        Long index = huser.getId();
+        for(int i = 1; i < index+1; i++){
+            wordmatrix.add(new ArrayList<>());
+        }
+
+        for (Users u : user){
+            posts = Post.find.where().eq("poster_id", u.getId()).findList();
+            if (!posts.isEmpty()){
+                Map<String, Integer> words = new HashMap<String, Integer>();
+                List<Map<String, Integer>> lwords = new ArrayList<>();
+                for( Post p : posts){
+                    String helpstring = p.getPost();
+                    String[] singlewords = helpstring.split(" ");
+                    for(String s: singlewords){
+                        s = s.toUpperCase();
+                        if(words.containsKey(s)){
+                            Integer value = words.get(s);
+                            words.put(s, value + 1);
+                        }
+                        else{
+                            words.put(s,1);
+                        }
+                    }
+                }
+                lwords.add(words);
+                Long enter = u.getId() - 1;
+                wordmatrix.set(enter.intValue(),lwords);
+            }
+        }
+
+
+        return wordmatrix;
+    }
+
+    @Security.Authenticated(Secured.class)
+    public static Result tf_idf(){
+
+        List<List<Map<String, Integer>>> userwordmatrix = creat_word_matrix();
+        List<String> keywords = new ArrayList<>();
+        Map<String, Integer> wordmatrix = new HashMap<String, Integer>();
+        Integer activeuser = 0;
+        Integer userid = 0;
+        Double userwords = 0.0;
+        List<List<Double>> maxwords = new ArrayList<>();
+        List<Users> user = new ArrayList<>();
+        List<List<Map<String, Double>>> tf_idf_result = new ArrayList<>();
+
+        user = Users.find.all();
+        Users huser = user.get(user.size() - 1);
+        Long index = huser.getId();
+        for(int i = 1; i < index+1; i++){
+            maxwords.add(new ArrayList<>());
+            tf_idf_result.add(new ArrayList<>());
+        }
+
+
+        for(List<Map<String, Integer>> lwords : userwordmatrix){
+            for(Map<String, Integer> words :lwords){
+                Set<String> swords = words.keySet();
+                for(String s : swords){
+                    keywords.add(s);
+                    if (wordmatrix.containsKey(s)){
+                        Integer value = wordmatrix.get(s);
+                        wordmatrix.put(s, value + words.get(s));
+                    }else{
+                        wordmatrix.put(s, 1);
+                    }
+                }
+            }
+        }
+
+
+        for (List<Map<String, Integer>> lwords : userwordmatrix){
+            if(!lwords.isEmpty()){
+                activeuser = activeuser + 1;
+                for(Map<String, Integer> words :lwords){
+                    for (String s : keywords){
+                        if(words.containsKey(s)){
+                            Double helpnumber = Double.parseDouble(String.valueOf(words.get(s)));
+                            if (helpnumber > userwords){
+                                userwords = helpnumber;
+                            }
+                        }
+                    }
+                }
+                List<Double> helplist = new ArrayList<>();
+                helplist.add(userwords);
+                userwords = 0.0;
+                maxwords.set(userid, helplist);
+            }
+            userid = userid + 1;
+        }
+
+        userid = 0;
+        for (List<Map<String, Integer>> lwords : userwordmatrix){
+            if (!lwords.isEmpty()) {
+                Map<String, Double> helpmap = new HashMap<>();
+                for (Map<String, Integer> words : lwords) {
+                    for (String s : keywords) {
+                        s = s.toUpperCase();
+                        if (words.containsKey(s)) {
+                            Double helpnumber = (helpmap.put(s,((words.get(s)/(maxwords.get(userid).get(0)))*(Math.log10(activeuser/wordmatrix.get(s))))));
+                            Logger.debug("Ergebnis" + helpnumber);
+                            List<Map<String, Double>> helplist = new ArrayList<>();
+                            helpmap.put(s,helpnumber);
+                            helplist.add(helpmap);
+                            tf_idf_result.set(userid, helplist);
+                        }
+
+                    }
+                }
+            }
+            userid = userid + 1;
+        }
+        Logger.debug("Endergebnis " + tf_idf_result);
+        return null;
     }
 
     /**
