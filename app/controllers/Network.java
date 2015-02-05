@@ -548,7 +548,6 @@ public class Network extends Controller {
                     }
                     cosine_amount = cosine_amount_help1/Math.sqrt(cosine_amount_help2)*Math.sqrt(cosine_amount_help3);
                     cosine_amount_matrix.get(counter2).add(counter1, (float) cosine_amount);
-                    Logger.debug("Cosinus Wert" + cosine_amount);
                     counter2 = counter2 + 1;
                 }
             }
