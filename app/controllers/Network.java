@@ -388,11 +388,11 @@ public class Network extends Controller {
         user = Users.find.all();
         Users huser = user.get(user.size() - 1);
         Long index = huser.getId();
-        for(int i = 1; i < index+1; i++){
+        for(int i = 1; i < index+1; i++) {
             wordmatrix.add(new ArrayList<>());
         }
 
-        for (Users u : user){
+        for (Users u : user) {
             posts = Post.find.where().eq("poster_id", u.getId()).findList();
             if (!posts.isEmpty()){
                 Map<String, Integer> words = new HashMap<String, Integer>();
@@ -511,7 +511,7 @@ public class Network extends Controller {
      * @return
      */
     @Security.Authenticated(Secured.class)
-    public static Result cosine_amount(){
+    public static Result cosine_amount() {
 
         List<List<Map<String, Float>>> tf_idf_matrix = tf_idf();
         List<List<Float>> cosine_amount_matrix = new ArrayList<>();
@@ -653,7 +653,7 @@ public class Network extends Controller {
     /**
      * create vote
      *
-     * @param
+     * @param id
      * @return
      */
     @Security.Authenticated(Secured.class)
@@ -697,7 +697,7 @@ public class Network extends Controller {
     /**
      * delete vote
      *
-     * @param
+     * @param id
      * @return
      */
     @Security.Authenticated(Secured.class)
