@@ -308,7 +308,6 @@ public class Network extends Controller {
         List<Friendship> gfriends = new ArrayList<>();
         List<Users> nonfriends = new ArrayList<>();
         List<Users> nongfriends = new ArrayList<>();
-        //List<Users> nonffriends = new ArrayList<>();
         List<Users> suggestions = new ArrayList<>();
 
         friend = Friendship.find.where().eq("friend_id", session().get("userid")).findList();
@@ -317,22 +316,14 @@ public class Network extends Controller {
 
         if (!myfriends.isEmpty()) {
             for (Friendship f : friend) {
-                if (myfriends.contains(f)) {
-                    friend.remove(f);
-                    myfriends.remove(f);
+                for (Friendship ff : myfriends) {
+                    if (f.getUserid() == ff.getFriendid()) {
+                        friend.remove(f);
+                        myfriends.remove(f);
+                    }
                 }
             }
         }
-
-        Logger.info("a");
-
-        /*for (Friendship f: myfriends) {
-            Users u = Users.findById(f.getFriendid());
-
-            if (u != null) {
-                nonffriends.add(u);
-            }
-        }*/
 
         if (!friend.isEmpty()) {
             for (Friendship f: friend) {
@@ -368,9 +359,16 @@ public class Network extends Controller {
             }
         }
 
+        if (!nonfriends.isEmpty() && !nongfriends.isEmpty()) {
+            for (Users u : nonfriends) {
+                if (nongfriends.contains(u)) {
+                    nongfriends.remove(u);
+                }
+            }
+        }
+
         suggestions.addAll(nonfriends);
         suggestions.addAll(nongfriends);
-        //suggestions.addAll(nonffriends);
 
         return ok(netfriends.render(session().get("email"), suggestions));
     }
