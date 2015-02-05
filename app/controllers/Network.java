@@ -80,7 +80,7 @@ public class Network extends Controller {
 
         java.util.Collections.reverse(posts);
 
-        Logger.debug(String.valueOf(cosine_amount()));
+        
         return ok(network.render(session().get("email"), false, "", posts));
     }
 
@@ -388,7 +388,7 @@ public class Network extends Controller {
         user = Users.find.all();
         Users huser = user.get(user.size() - 1);
         Long index = huser.getId();
-        for(int i = 1; i < index+1; i++) {
+        for(int i = 1; i < index+1; i++) {   //Initialization of the word matrix
             wordmatrix.add(new ArrayList<>());
         }
 
@@ -404,16 +404,16 @@ public class Network extends Controller {
                         s = s.toUpperCase();
                         if(words.containsKey(s)){
                             Integer value = words.get(s);
-                            words.put(s, value + 1);
+                            words.put(s, value + 1); //increase the number of a word
                         }
                         else{
-                            words.put(s,1);
+                            words.put(s,1);// enter words of the user in the map of this user
                         }
                     }
                 }
                 lwords.add(words);
                 Long enter = u.getId() - 1;
-                wordmatrix.set(enter.intValue(),lwords);
+                wordmatrix.set(enter.intValue(),lwords);//create the word matrix
             }
         }
 
@@ -440,12 +440,13 @@ public class Network extends Controller {
         user = Users.find.all();
         Users huser = user.get(user.size() - 1);
         Long index = huser.getId();
+        /*Initialization of the TF IDF matrix*/
         for(int i = 1; i < index+1; i++){
             maxwords.add(new ArrayList<>());
             tf_idf_result.add(new ArrayList<>());
         }
 
-
+        /*create a matrix which contains by how many users a special word is used*/
         for(List<Map<String, Integer>> lwords : userwordmatrix){
             for(Map<String, Integer> words :lwords){
                 Set<String> swords = words.keySet();
@@ -461,10 +462,10 @@ public class Network extends Controller {
             }
         }
 
-
+        /*create a matrix which contains the maximum amount of one word by one user*/
         for (List<Map<String, Integer>> lwords : userwordmatrix){
             if(!lwords.isEmpty()){
-                activeuser = activeuser + 1;
+                activeuser = activeuser + 1; //count the number of users in the network
                 for(Map<String, Integer> words :lwords){
                     for (String s : keywords){
                         if(words.containsKey(s)){
@@ -484,6 +485,7 @@ public class Network extends Controller {
         }
 
         userid = 0;
+        /*create the TF IDF matrix*/
         for (List<Map<String, Integer>> lwords : userwordmatrix){
             if (!lwords.isEmpty()) {
                 Map<String, Float> helpmap = new HashMap<>();
@@ -517,7 +519,6 @@ public class Network extends Controller {
         List<List<Float>> cosine_amount_matrix = new ArrayList<>();
         List<Users> user = new ArrayList<>();
         Integer counter1 = 0;
-        Integer counter2 = 0;
         Float cosine_amount_help1 = (float) 0.0;
         Float cosine_amount_help2 = (float) 0.0;
         Float cosine_amount_help3 = (float) 0.0;
@@ -526,34 +527,40 @@ public class Network extends Controller {
         user = Users.find.all();
         Users huser = user.get(user.size() - 1);
         Long index = huser.getId();
+        /*Initialization of the TF IDF matrix*/
         for(int i = 1; i < index+1; i++){
             cosine_amount_matrix.add(new ArrayList<>());
         }
 
-        for(List<Map<String, Float>> helplist : tf_idf_matrix){
+        /*the try of the realization of the cosine amount formula*/
+        /*for(List<Map<String, Float>> helplist : tf_idf_matrix){
             for (Map<String, Float> helpmap : helplist){
                 Set<String> helpset = helpmap.keySet();
-                for (int i = 1; i < counter2; i++){ // Diese Schleife wird nie aufgerufen! counter2 wird immer 0 sein, auf was soll das gesetzt werden?
+                Logger.debug("helpset " + helpset);
+                for (int i = 1; i < tf_idf_matrix.size(); i++){ // Diese Schleife wird nie aufgerufen! counter2 wird immer 0 sein, auf was soll das gesetzt werden?
                     for (String helpstring : helpset){
+                        Logger.debug("helpstring " + helpstring);
                         if (helplist.get(0).containsKey(helpstring)){
-                            cosine_amount_help1 = (float) helplist.get(0).get(helpstring)* tf_idf_matrix.get(counter2).get(0).get(helpstring) + cosine_amount_help1;
+                            Logger.debug("Helplist " + helplist);
+                            cosine_amount_help1 = (float) helplist.get(0).get(helpstring)* tf_idf_matrix.get(i - 1).get(0).get(helpstring) + cosine_amount_help1;
+                            Logger.debug("cosine_amount1 " + cosine_amount_help1);
                             cosine_amount_help2 = (float) helplist.get(0).get(helpstring) * helplist.get(0).get(helpstring) + cosine_amount_help2;
+                            Logger.debug("cosine_amount2 " + cosine_amount_help2);
                         }
                     }
-                    Set<String> helparray = tf_idf_matrix.get(counter2).get(0).keySet();
+                    Set<String> helparray = tf_idf_matrix.get(i - 1).get(0).keySet();
                     for (String s : helparray){
-                        cosine_amount_help3 = (float) tf_idf_matrix.get(counter2).get(0).get(s) * tf_idf_matrix.get(counter2).get(0).get(s) + cosine_amount_help3;
+                        cosine_amount_help3 = (float) tf_idf_matrix.get(i - 1 ).get(0).get(s) * tf_idf_matrix.get(i - 1).get(0).get(s) + cosine_amount_help3;
+                        Logger.debug("cosine_amount3 " + cosine_amount_help3);
                     }
                     cosine_amount = cosine_amount_help1/Math.sqrt(cosine_amount_help2)*Math.sqrt(cosine_amount_help3);
-                    cosine_amount_matrix.get(counter2).add(counter1, (float) cosine_amount);
-                    counter2 = counter2 + 1;
+                    cosine_amount_matrix.get(i - 1).add(counter1, (float) cosine_amount);
                 }
             }
             counter1 = counter1 + 1;
-            counter2 = 0;
         }
         Logger.debug("Cosinus Matrix" + cosine_amount_matrix);
-
+        */
 
         return null;
     }
