@@ -80,7 +80,7 @@ public class Network extends Controller {
 
         java.util.Collections.reverse(posts);
 
-        Logger.debug(String.valueOf(tf_idf()));
+        Logger.debug(String.valueOf(cosine_amount()));
         return ok(network.render(session().get("email"), false, "", posts));
     }
 
@@ -375,7 +375,10 @@ public class Network extends Controller {
         return ok(netfriends.render(session().get("email"), suggestions));
     }
 
-
+    /**
+     * Creates the user-word-matrix for content analysis
+     * @return
+     */
     @Security.Authenticated(Secured.class)
     public static List<List<Map<String, Integer>>> creat_word_matrix()
     {
@@ -419,9 +422,12 @@ public class Network extends Controller {
 
         return wordmatrix;
     }
-
+    /**
+     * Calculates the TF-IDF weighting for content analysis
+     * @return
+     */
     @Security.Authenticated(Secured.class)
-    public static Result tf_idf(){
+    public static List<List<Map<String, Float>>> tf_idf(){
 
         List<List<Map<String, Integer>>> userwordmatrix = creat_word_matrix();
         List<String> keywords = new ArrayList<>();
@@ -499,7 +505,59 @@ public class Network extends Controller {
             }
             userid = userid + 1;
         }
-        Logger.debug("Endergebnis " + tf_idf_result);
+        return tf_idf_result;
+    }
+
+    /**
+     * Calculates the cosine amount  for content analysis
+     * @return
+     */
+    @Security.Authenticated(Secured.class)
+    public static Result cosine_amount(){
+
+        List<List<Map<String, Float>>> tf_idf_matrix = tf_idf();
+        List<List<Float>> cosine_amount_matrix = new ArrayList<>();
+        List<Users> user = new ArrayList<>();
+        Integer counter1 = 0;
+        Integer counter2 = 0;
+        Float cosine_amount_help1 = (float) 0.0;
+        Float cosine_amount_help2 = (float) 0.0;
+        Float cosine_amount_help3 = (float) 0.0;
+        double cosine_amount = (float) 0.0;
+
+        user = Users.find.all();
+        Users huser = user.get(user.size() - 1);
+        Long index = huser.getId();
+        for(int i = 1; i < index+1; i++){
+            cosine_amount_matrix.add(new ArrayList<>());
+        }
+
+        for(List<Map<String, Float>> helplist : tf_idf_matrix){
+            for (Map<String, Float> helpmap : helplist){
+                Set<String> helpset = helpmap.keySet();
+                for (int i = 1; i < counter2; i++){
+                    for (String helpstring : helpset){
+                        if (helplist.get(0).containsKey(helpstring)){
+                            cosine_amount_help1 = (float) helplist.get(0).get(helpstring)* tf_idf_matrix.get(counter2).get(0).get(helpstring) + cosine_amount_help1;
+                            cosine_amount_help2 = (float) helplist.get(0).get(helpstring) * helplist.get(0).get(helpstring) + cosine_amount_help2;
+                        }
+                    }
+                    Set<String> helparray = tf_idf_matrix.get(counter2).get(0).keySet();
+                    for (String s : helparray){
+                        cosine_amount_help3 = (float) tf_idf_matrix.get(counter2).get(0).get(s) * tf_idf_matrix.get(counter2).get(0).get(s) + cosine_amount_help3;
+                    }
+                    cosine_amount = cosine_amount_help1/Math.sqrt(cosine_amount_help2)*Math.sqrt(cosine_amount_help3);
+                    cosine_amount_matrix.get(counter2).add(counter1, (float) cosine_amount);
+                    Logger.debug("Cosinus Wert" + cosine_amount);
+                    counter2 = counter2 + 1;
+                }
+            }
+            counter1 = counter1 + 1;
+            counter2 = 0;
+        }
+        Logger.debug("Cosinus Matrix" + cosine_amount_matrix);
+
+
         return null;
     }
 
