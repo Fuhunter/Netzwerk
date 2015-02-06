@@ -81,7 +81,6 @@ public class Network extends Controller {
 
         java.util.Collections.reverse(posts);
 
-        Logger.debug("Matrix", cosine_amount());
 
         
         return ok(network.render(session().get("email"), false, "", posts));
@@ -521,7 +520,7 @@ public class Network extends Controller {
      * @return
      */
     @Security.Authenticated(Secured.class)
-    public static Result cosine_amount() {
+    public static List<List<Float>> cosine_amount() {
 
         List<List<Map<String, Float>>> tf_idf_matrix = tf_idf();
         List<List<Float>> cosine_amount_matrix = new ArrayList<>();
@@ -558,9 +557,7 @@ public class Network extends Controller {
                     for (String helpstring : all_words){
                         if (helplist.get(0).containsKey(helpstring)){
                             cosine_amount_help1 = (float) (helplist.get(0).get(helpstring) * tf_idf_matrix.get(counter2).get(0).get(helpstring)) + cosine_amount_help1;
-                            Logger.debug("cosine_amount1 " + cosine_amount_help1);
                             cosine_amount_help2 = (float) (helplist.get(0).get(helpstring) * helplist.get(0).get(helpstring)) + cosine_amount_help2;
-                            Logger.debug("cosine_amount2 " + cosine_amount_help2);
                         }
                     }
 
@@ -568,7 +565,6 @@ public class Network extends Controller {
                     for (String s : all_words){
                         if(tf_idf_matrix.get(counter2).get(0).containsKey(s)) {
                             cosine_amount_help3 = (float) (tf_idf_matrix.get(counter2).get(0).get(s) * tf_idf_matrix.get(counter2).get(0).get(s)) + cosine_amount_help3;
-                            Logger.debug("cosine_amount3 " + cosine_amount_help3);
                         }
                     }
 
@@ -589,10 +585,8 @@ public class Network extends Controller {
             counter1 = 0;
             counter2 += 1;
         }
-        Logger.debug("Cosinus Matrix" + cosine_amount_matrix);
 
-
-        return null;
+        return cosine_amount_matrix;
     }
 
     /**
