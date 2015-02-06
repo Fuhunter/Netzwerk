@@ -13,6 +13,7 @@ import play.api.libs.Collections;
 import play.data.DynamicForm;
 import play.db.ebean.Transactional;
 import play.mvc.*;
+import tyrex.util.ArraySet;
 import views.html.*;
 
 import models.*;
@@ -500,7 +501,7 @@ public class Network extends Controller {
                         s = s.toUpperCase();
                         if (words.containsKey(s)) {
                             List<Map<String, Float>> helplist = new ArrayList<>();
-                            Float helpnumber = helpmap.put(s, helpmap.put(s, (float) ((words.get(s) / (maxwords.get(userid).get(0))) * (Math.log(activeuser/wordmatrix.get(s))))));
+                            Float helpnumber = helpmap.put(s, helpmap.put(s, (float) ((words.get(s) / (maxwords.get(userid).get(0))) * (Math.log(activeuser / wordmatrix.get(s))))));
                             helpmap.put(s, helpnumber);
                             helplist.add(helpmap);
                             tf_idf_result.set(userid, helplist);
@@ -531,6 +532,7 @@ public class Network extends Controller {
         Float cosine_amount_help2 = (float) 0.0;
         Float cosine_amount_help3 = (float) 0.0;
         Float cosine_amount = (float) 0.0;
+        Set<String> all_words = new ArraySet();
 
         user = Users.find.all();
         Users huser = user.get(user.size() - 1);
@@ -540,12 +542,20 @@ public class Network extends Controller {
             cosine_amount_matrix.add(new ArrayList<>());
         }
 
+        for(List<Map<String, Float>> helplist : tf_idf_matrix) {
+            for (Map<String, Float> helpmap : helplist) {
+                Set<String> helpset = helpmap.keySet();
+                for (String s : helpset){
+                    all_words.add(s);
+                }
+            }
+        }
+
         /*the try of the realization of the cosine amount formula*/
         for(List<Map<String, Float>> helplist : tf_idf_matrix){
             for (Map<String, Float> helpmap : helplist){
-                Set<String> helpset = helpmap.keySet();
                 for (int i = 1; i < tf_idf_matrix.size(); i++){
-                    for (String helpstring : helpset){
+                    for (String helpstring : all_words){
                         if (helplist.get(0).containsKey(helpstring)){
                             cosine_amount_help1 = (float) (helplist.get(0).get(helpstring) * tf_idf_matrix.get(counter2).get(0).get(helpstring)) + cosine_amount_help1;
                             Logger.debug("cosine_amount1 " + cosine_amount_help1);
@@ -554,17 +564,19 @@ public class Network extends Controller {
                         }
                     }
 
-                    Set<String> helparray = tf_idf_matrix.get(counter2).get(0).keySet();
 
-                    for (String s : helparray){
-                        cosine_amount_help3 = (float) (tf_idf_matrix.get(counter2).get(0).get(s) * tf_idf_matrix.get(counter2).get(0).get(s)) + cosine_amount_help3;
-                        Logger.debug("cosine_amount3 " + cosine_amount_help3);
+                    for (String s : all_words){
+                        if(tf_idf_matrix.get(counter2).get(0).containsKey(s)) {
+                            cosine_amount_help3 = (float) (tf_idf_matrix.get(counter2).get(0).get(s) * tf_idf_matrix.get(counter2).get(0).get(s)) + cosine_amount_help3;
+                            Logger.debug("cosine_amount3 " + cosine_amount_help3);
+                        }
                     }
 
                     if (cosine_amount_help2 == 0.0 || cosine_amount_help3 == 0.0) {
                         cosine_amount = (float) 0.0;
                     } else {
                         cosine_amount = (float) (cosine_amount_help1 / (Math.sqrt(cosine_amount_help2) * Math.sqrt(cosine_amount_help3)));
+                        Logger.debug(String.valueOf(cosine_amount));
                     }
 
                     cosine_amount_matrix.get(counter2).add(counter1, (float) cosine_amount);
@@ -574,8 +586,8 @@ public class Network extends Controller {
                     cosine_amount_help3 = (float) 0.0;
                 }
             }
-            counter2 += 1;
             counter1 = 0;
+            counter2 += 1;
         }
         Logger.debug("Cosinus Matrix" + cosine_amount_matrix);
 
