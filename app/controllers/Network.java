@@ -80,6 +80,8 @@ public class Network extends Controller {
 
         java.util.Collections.reverse(posts);
 
+        Logger.debug("Matrix", cosine_amount());
+
         
         return ok(network.render(session().get("email"), false, "", posts));
     }
@@ -458,7 +460,7 @@ public class Network extends Controller {
                     keywords.add(s);
                     if (wordmatrix.containsKey(s)){
                         Integer value = wordmatrix.get(s);
-                        wordmatrix.put(s, value + words.get(s));
+                        wordmatrix.put(s, value + 1);
                     }else{
                         wordmatrix.put(s, 1);
                     }
@@ -498,7 +500,7 @@ public class Network extends Controller {
                         s = s.toUpperCase();
                         if (words.containsKey(s)) {
                             List<Map<String, Float>> helplist = new ArrayList<>();
-                            Float helpnumber = helpmap.put(s,helpmap.put(s, (float) ((words.get(s)/(maxwords.get(userid).get(0)))*(Math.log10(activeuser/wordmatrix.get(s))))));
+                            Float helpnumber = helpmap.put(s, helpmap.put(s, (float) ((words.get(s) / (maxwords.get(userid).get(0))) * (Math.log(activeuser/wordmatrix.get(s))))));
                             helpmap.put(s, helpnumber);
                             helplist.add(helpmap);
                             tf_idf_result.set(userid, helplist);
@@ -514,6 +516,7 @@ public class Network extends Controller {
 
     /**
      * Calculates the cosine amount  for content analysis
+     *
      * @return
      */
     @Security.Authenticated(Secured.class)
@@ -523,10 +526,11 @@ public class Network extends Controller {
         List<List<Float>> cosine_amount_matrix = new ArrayList<>();
         List<Users> user = new ArrayList<>();
         Integer counter1 = 0;
+        Integer counter2 = 0;
         Float cosine_amount_help1 = (float) 0.0;
         Float cosine_amount_help2 = (float) 0.0;
         Float cosine_amount_help3 = (float) 0.0;
-        double cosine_amount = (double) 0.0;
+        Float cosine_amount = (float) 0.0;
 
         user = Users.find.all();
         Users huser = user.get(user.size() - 1);
@@ -537,34 +541,44 @@ public class Network extends Controller {
         }
 
         /*the try of the realization of the cosine amount formula*/
-        /*for(List<Map<String, Float>> helplist : tf_idf_matrix){
+        for(List<Map<String, Float>> helplist : tf_idf_matrix){
             for (Map<String, Float> helpmap : helplist){
                 Set<String> helpset = helpmap.keySet();
-                Logger.debug("helpset " + helpset);
-                for (int i = 1; i < tf_idf_matrix.size(); i++){ // Diese Schleife wird nie aufgerufen! counter2 wird immer 0 sein, auf was soll das gesetzt werden?
+                for (int i = 1; i < tf_idf_matrix.size(); i++){
                     for (String helpstring : helpset){
-                        Logger.debug("helpstring " + helpstring);
                         if (helplist.get(0).containsKey(helpstring)){
-                            Logger.debug("Helplist " + helplist);
-                            cosine_amount_help1 = (float) helplist.get(0).get(helpstring)* tf_idf_matrix.get(i - 1).get(0).get(helpstring) + cosine_amount_help1;
+                            cosine_amount_help1 = (float) (helplist.get(0).get(helpstring) * tf_idf_matrix.get(counter2).get(0).get(helpstring)) + cosine_amount_help1;
                             Logger.debug("cosine_amount1 " + cosine_amount_help1);
-                            cosine_amount_help2 = (float) helplist.get(0).get(helpstring) * helplist.get(0).get(helpstring) + cosine_amount_help2;
+                            cosine_amount_help2 = (float) (helplist.get(0).get(helpstring) * helplist.get(0).get(helpstring)) + cosine_amount_help2;
                             Logger.debug("cosine_amount2 " + cosine_amount_help2);
                         }
                     }
-                    Set<String> helparray = tf_idf_matrix.get(i - 1).get(0).keySet();
+
+                    Set<String> helparray = tf_idf_matrix.get(counter2).get(0).keySet();
+
                     for (String s : helparray){
-                        cosine_amount_help3 = (float) tf_idf_matrix.get(i - 1 ).get(0).get(s) * tf_idf_matrix.get(i - 1).get(0).get(s) + cosine_amount_help3;
+                        cosine_amount_help3 = (float) (tf_idf_matrix.get(counter2).get(0).get(s) * tf_idf_matrix.get(counter2).get(0).get(s)) + cosine_amount_help3;
                         Logger.debug("cosine_amount3 " + cosine_amount_help3);
                     }
-                    cosine_amount = cosine_amount_help1/Math.sqrt(cosine_amount_help2)*Math.sqrt(cosine_amount_help3);
-                    cosine_amount_matrix.get(i - 1).add(counter1, (float) cosine_amount);
+
+                    if (cosine_amount_help2 == 0.0 || cosine_amount_help3 == 0.0) {
+                        cosine_amount = (float) 0.0;
+                    } else {
+                        cosine_amount = (float) (cosine_amount_help1 / (Math.sqrt(cosine_amount_help2) * Math.sqrt(cosine_amount_help3)));
+                    }
+
+                    cosine_amount_matrix.get(counter2).add(counter1, (float) cosine_amount);
+                    counter1 += 1;
+                    cosine_amount_help1 = (float) 0.0;
+                    cosine_amount_help2 = (float) 0.0;
+                    cosine_amount_help3 = (float) 0.0;
                 }
             }
-            counter1 = counter1 + 1;
+            counter2 += 1;
+            counter1 = 0;
         }
         Logger.debug("Cosinus Matrix" + cosine_amount_matrix);
-        */
+
 
         return null;
     }
@@ -577,87 +591,7 @@ public class Network extends Controller {
     @Security.Authenticated(Secured.class)
     public static Result contentfriends(Long id)
     {
-        List<Friendship> friend = new ArrayList<>();
-        List<Friendship> myfriends = new ArrayList<>();
-        List<Friendship> bfriends = new ArrayList<>();
-        List<Users> allUsers = new ArrayList<>();
-        List<Post> myPosts = new ArrayList<>();
-        List<Post> userPosts = new ArrayList<>();
-        List<String[]> myWords = new ArrayList<>();
-        List<String[]> userWords = new ArrayList<>();
-        //String[][] user_word_matrix = new String[][] {{}};
-        List<Users> suggestions = new ArrayList<>();
-
-        Boolean checker = false;
-
-        String regexSpecialChars = "[^\\w\\s]";
-
-        allUsers = Users.find.all();
-
-        myPosts = Post.find.where().eq("poster_id", session().get("userid")).findList();
-        userPosts = Post.find.where().not(com.avaje.ebean.Expr.eq("poster_id", session().get("userid"))).findList();
-
-        friend = Friendship.find.where().eq("friend_id", session().get("userid")).findList();
-        myfriends = Friendship.find.where().eq("user_id", session().get("userid")).findList();
-
-        if (!myfriends.isEmpty()) {
-            for (Friendship f : friend) {
-                if (myfriends.contains(f)) {
-                    friend.remove(f);
-                    myfriends.remove(f);
-                    bfriends.add(f);
-                }
-            }
-        }
-
-        /*if (!userPosts.isEmpty()) {
-            for (Post p : userPosts) {
-                checker = false;
-                for (Friendship f : bfriends) {
-                    if (p.getPoster().equals(f.getUserid())) {
-                        checker = true;
-                        userPosts.remove(p);
-                        break;
-                    }
-                }
-
-                for (Friendship f : myfriends) {
-                    if (p.getPoster().equals(f.getFriendid())) {
-                        checker = true;
-                        userPosts.remove(p);
-                        break;
-                    }
-                }
-
-                if (checker == false) {
-                    String help = p.getPost().replaceAll(regexSpecialChars, "");
-                    userWords.add(help.split("\\s"));
-                } else {
-                    continue;
-                }
-            }
-
-            HashSet helpu = new HashSet(userWords);
-            userWords.clear();
-            userWords.addAll(helpu);
-            userWords.toArray();
-        }
-
-
-
-        if (!myPosts.isEmpty()) {
-            for (Post p: myPosts) {
-                String help = p.getPost().replaceAll(regexSpecialChars, "");
-                myWords.add(help.split("\\s"));
-            }
-
-            HashSet helpm = new HashSet(myWords);
-            myWords.clear();
-            myWords.addAll(helpm);
-
-        }*/
-
-        return ok(confriends.render(session().get("email"), suggestions));
+        return ok(confriends.render(session().get("email"), null));
     }
 
 
