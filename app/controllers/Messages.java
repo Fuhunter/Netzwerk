@@ -25,7 +25,7 @@ public class Messages extends Controller {
     /**
      * If authenticated render Indexpage
      *
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result index() {
@@ -54,7 +54,7 @@ public class Messages extends Controller {
     /**
      * If authenticated render Indexpage
      *
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result abs() {
@@ -83,7 +83,7 @@ public class Messages extends Controller {
     /**
      * If authenticated render Indexpage
      *
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result betr() {
@@ -111,7 +111,7 @@ public class Messages extends Controller {
 
     /**
      * Show page for new message
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result newm() {
@@ -120,7 +120,7 @@ public class Messages extends Controller {
 
     /**
      * Create new Message
-     * @return
+     * @return Elements for View
      */
     public static Result create() {
         DynamicForm nm = new DynamicForm().bindFromRequest();
@@ -228,8 +228,8 @@ public class Messages extends Controller {
 
     /**
      * Show message
-     * @param id
-     * @return
+     * @param id Message id
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result show(Long id) {
@@ -244,8 +244,8 @@ public class Messages extends Controller {
 
     /**
      * delete message
-     * @param id
-     * @return
+     * @param id Message id
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result del(Long id) {

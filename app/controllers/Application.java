@@ -15,7 +15,7 @@ public class Application extends Controller {
 
     /**
      * Show indexpage
-     * @return
+     * @return Elements for View
      */
     public static Result index() {
         return ok(index.render());
@@ -23,7 +23,7 @@ public class Application extends Controller {
 
     /**
      * show aboutpage
-     * @return
+     * @return Elements for View
      */
     public static Result about() {
         return ok(about.render(null));
@@ -31,7 +31,7 @@ public class Application extends Controller {
 
     /**
      * show impressum
-     * @return
+     * @return Elements for View
      */
     public static Result impressum() {
         return ok(impressum.render());

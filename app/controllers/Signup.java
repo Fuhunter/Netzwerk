@@ -24,7 +24,7 @@ public class Signup extends Controller {
 
     /**
      * Show index Page of App
-     * @return Result
+     * @return Elements for View Result
      */
     public static Result index() {
         return ok(signup.render(null, null));
@@ -32,7 +32,7 @@ public class Signup extends Controller {
 
     /**
      * Registers new User and insert into Database. Is transactional Action
-     * @return
+     * @return Elements for View
      */
     @Transactional
     public static Result register() {
@@ -134,7 +134,7 @@ public class Signup extends Controller {
 
     /**
      * Logins a User by typed Email and Password
-     * @return
+     * @return Elements for View
      */
     @Transactional
     public static Result login() {
@@ -180,7 +180,7 @@ public class Signup extends Controller {
 
     /**
      * Shows Loginpage
-     * @return
+     * @return Elements for View
      */
     public static Result loginPage() {
         String message = null;
@@ -193,7 +193,7 @@ public class Signup extends Controller {
 
     /**
      * Destroys session -> User is logged out
-     * @return
+     * @return Elements for View
      */
     @Transactional
     public static Result logout() {

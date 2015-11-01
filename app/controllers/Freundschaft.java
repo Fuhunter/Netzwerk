@@ -21,7 +21,7 @@ public class Freundschaft extends Controller {
     /**
      * Show friendships
      *
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result index() {
@@ -59,8 +59,8 @@ public class Freundschaft extends Controller {
 
     /**
      * add new friendship
-     * @param id
-     * @return
+     * @param id User id
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     @Transactional
@@ -100,8 +100,8 @@ public class Freundschaft extends Controller {
 
     /**
      * unfriend
-     * @param id
-     * @return
+     * @param id User id
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     @Transactional

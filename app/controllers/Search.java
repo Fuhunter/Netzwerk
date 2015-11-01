@@ -24,7 +24,7 @@ public class Search extends Controller {
 
     /**
      * Show search page
-     * @return
+     * @return Elements for View
      */
     public static Result index() {
         return ok(search.render(session().get("email"), "", null, null, null, false, ""));
@@ -32,7 +32,7 @@ public class Search extends Controller {
 
     /**
      * Show search results
-     * @return
+     * @return Elements for View
      */
     public static Result search() {
         DynamicForm sform = new DynamicForm().bindFromRequest();

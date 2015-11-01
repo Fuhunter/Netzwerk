@@ -23,7 +23,7 @@ public class Group extends Controller {
     /**
      * If authenticated render Indexpage
      *
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result index() {
@@ -33,7 +33,7 @@ public class Group extends Controller {
 
     /**
      * Create Group
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     @Transactional
@@ -75,7 +75,7 @@ public class Group extends Controller {
 
     /**
      * show my groups
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result showGroups() {

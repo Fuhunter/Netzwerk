@@ -19,8 +19,8 @@ public class Secured extends Security.Authenticator {
 
     /**
      * Checks User Permissions and for SessionTimeout
-     * @param ctx
-     * @return
+     * @param ctx Context
+     * @return Elements for View
      */
     @Override
     @Transactional
@@ -74,8 +74,8 @@ public class Secured extends Security.Authenticator {
 
     /**
      * Redirects to LoginPage if User is not authorized
-     * @param ctx
-     * @return
+     * @param ctx Context
+     * @return Elements for View
      */
     @Override
     public Result onUnauthorized(Context ctx) {

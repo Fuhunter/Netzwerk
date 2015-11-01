@@ -18,7 +18,7 @@ public class Usersettings extends Controller {
 
     /**
      * If authenticated render Indexpage
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result index() {
@@ -37,7 +37,7 @@ public class Usersettings extends Controller {
 
     /**
      * Update User settings
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     @Transactional
@@ -101,9 +101,9 @@ public class Usersettings extends Controller {
 
     /**
      * Change user password
-     * @param changes
-     * @param user
-     * @return
+     * @param changes Changes
+     * @param user User
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     @Transactional

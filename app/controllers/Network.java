@@ -25,7 +25,7 @@ public class Network extends Controller {
 
     /**
      * If authenticated render Indexpage
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result index() {
@@ -88,7 +88,7 @@ public class Network extends Controller {
 
     /**
      * Show Endorado statistics
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result statistics() {
@@ -102,8 +102,8 @@ public class Network extends Controller {
 
     /**
      * Show user profile
-     * @param id
-     * @return
+     * @param id User id
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result showUser(Long id) {
@@ -154,8 +154,8 @@ public class Network extends Controller {
 
     /**
      * Show Groupprofile
-     * @param gruppenname
-     * @return
+     * @param gruppenname Groupname
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result showGroup(String gruppenname) {
@@ -187,8 +187,8 @@ public class Network extends Controller {
 
     /**
      * Leave Group and delete if last member
-     * @param name
-     * @return
+     * @param name Groupname
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result leaveGroup(String name) {
@@ -206,8 +206,8 @@ public class Network extends Controller {
 
     /**
      * Join group
-     * @param name
-     * @return
+     * @param name Groupname
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result enterGroup(String name){
@@ -222,7 +222,7 @@ public class Network extends Controller {
 
     /**
      * Creates a post
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     @Transactional
@@ -258,8 +258,8 @@ public class Network extends Controller {
 
     /**
      * Show Post
-     * @param id
-     * @return
+     * @param id Post id
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result showpost(Long id) {
@@ -270,8 +270,8 @@ public class Network extends Controller {
 
     /**
      * Edit your Post
-     * @param id
-     * @return
+     * @param id Post id
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     @Transactional
@@ -287,8 +287,8 @@ public class Network extends Controller {
 
     /**
      * Delete your Post
-     * @param id
-     * @return
+     * @param id Post id
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result delpost(Long id) {
@@ -299,8 +299,8 @@ public class Network extends Controller {
 
     /**
      * Show friends with network analysis
-     * @param id
-     * @return
+     * @param id USer id
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result netfriends(Long id) {
@@ -381,7 +381,7 @@ public class Network extends Controller {
 
     /**
      * Creates the user-word-matrix for content analysis
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static List<List<Map<String, Integer>>> creat_word_matrix()
@@ -428,7 +428,7 @@ public class Network extends Controller {
     }
     /**
      * Calculates the TF-IDF weighting for content analysis
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static List<List<Map<String, Float>>> tf_idf(){
@@ -517,7 +517,7 @@ public class Network extends Controller {
     /**
      * Calculates the cosine amount  for content analysis
      *
-     * @return
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static List<List<Float>> cosine_amount() {
@@ -591,8 +591,8 @@ public class Network extends Controller {
 
     /**
      * Get Friends with content analysis
-     * @param id
-     * @return
+     * @param id User id
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     public static Result contentfriends(Long id)
@@ -604,8 +604,8 @@ public class Network extends Controller {
     /**
      * create vote
      *
-     * @param id
-     * @return
+     * @param id User id
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     @Transactional
@@ -648,8 +648,8 @@ public class Network extends Controller {
     /**
      * delete vote
      *
-     * @param id
-     * @return
+     * @param id user id
+     * @return Elements for View
      */
     @Security.Authenticated(Secured.class)
     @Transactional
